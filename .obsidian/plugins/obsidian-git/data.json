@@ -1,0 +1,14 @@
+{
+  "commitMessage": "글 업데이트: {{date}} ({{numFiles}}개 파일)",
+  "autoCommitMessage": "자동 백업: {{date}}",
+  "commitDateFormat": "YYYY-MM-DD HH:mm",
+  "autoSaveInterval": 0,
+  "autoPushInterval": 0,
+  "autoPullInterval": 0,
+  "autoPullOnBoot": true,
+  "autoBackupAfterFileChange": false,
+  "pullBeforePush": true,
+  "disablePush": false,
+  "syncMethod": "merge",
+  "showStatusBar": true
+}

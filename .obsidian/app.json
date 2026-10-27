@@ -1,0 +1,19 @@
+{
+  "newFileLocation": "folder",
+  "newFileFolderPath": "_posts",
+  "attachmentFolderPath": "assets/img/posts",
+  "useMarkdownLinks": true,
+  "newLinkFormat": "absolute",
+  "alwaysUpdateLinks": true,
+  "strictLineBreaks": true,
+  "showLineNumber": true,
+  "promptDelete": true,
+  "userIgnoreFilters": [
+    "_site/",
+    ".jekyll-cache/",
+    ".github/",
+    ".devcontainer/",
+    ".vscode/",
+    "tools/"
+  ]
+}

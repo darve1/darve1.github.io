@@ -17,17 +17,37 @@
 메뉴에 보이는 이름은 `_data/locales/ko-KR.yml`의 `tabs`에서 바꿉니다(키 = 탭 파일 이름).
 탭 파일의 `category` 값은 글의 카테고리 이름과 같아야 합니다.
 
-## 글 쓰기
+## 글 쓰기 (Obsidian)
 
-`_posts/YYYY-MM-DD-영문-제목.md` 파일을 만들고 첫 줄에 아래처럼 적습니다.
-`categories`의 첫 번째 값은 위 표의 카테고리 이름과 **정확히 같아야** 사이드바 메뉴에 글이 모입니다.
+이 폴더 자체가 Obsidian 볼트입니다. 설정은 `.obsidian/`에 들어 있습니다.
+
+1. **새 글**: 왼쪽 리본의 "새 고유 노트 만들기" 또는 명령 팔레트(`Ctrl+P`) → `Unique note creator: Create new unique note`
+   → `_posts/YYYY-MM-DD-HHmm.md`가 `_templates/post.md` 내용으로 만들어집니다.
+2. **파일 이름**: 날짜 뒤 `HHmm`을 영문 슬러그로 바꿉니다. 예: `2026-10-27-dreamhack-xss.md` → 주소 `/posts/dreamhack-xss/`
+   (Jekyll은 `YYYY-MM-DD-`로 시작하지 않는 `_posts` 파일을 무시합니다.)
+3. **속성**: `title`, `description`, `categories`(첫 값 = 위 표의 카테고리 이름), `tags`를 채웁니다.
+4. **이미지**: 붙여넣기(`Ctrl+V`)하면 `assets/img/posts/`에 저장되고 블로그에서도 그대로 보입니다.
+5. **공개**: 다 쓰면 `published`를 체크하고 명령 팔레트 → `Git: Commit-and-sync`. 1~2분 뒤 사이트에 반영됩니다.
+
+- `published`가 체크되지 않은 글은 사이트에 나오지 않지만, **공개 레포라 GitHub에서는 원문이 보입니다.**
+- Obsidian을 열면 GitHub의 변경 사항을 자동으로 받아옵니다(pull). 자동 커밋·푸시는 꺼 두었습니다.
+- 위키링크(`[[...]]`)와 Obsidian 콜아웃(`> [!note]`)은 블로그에서 렌더링되지 않습니다.
+  링크는 마크다운 링크(기본 설정), 강조 박스는 Chirpy 문법을 씁니다:
+
+```markdown
+> 강조할 내용
+{: .prompt-tip }   <!-- prompt-info / prompt-warning / prompt-danger -->
+```
+
+직접 만들 때의 front matter 형식:
 
 ```yaml
 ---
 title: "글 제목"
-date: 2026-10-27 21:00:00 +0900
+description: "홈 목록에 보일 요약"
 categories: [CTF/Wargame, Dreamhack]   # [대분류, 소분류]
 tags: [web, xss]
+published: true
 ---
 ```
 
@@ -41,6 +61,7 @@ tags: [web, xss]
 - `_layouts/category-tab.html`: 카테고리 메뉴 페이지(소개 + 글 목록)
 - `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard 폰트, 사이드바 스타일
 - `_tabs/about.md`: 자기소개
+- `.obsidian/`, `_templates/post.md`: Obsidian 볼트 설정(Obsidian Git 플러그인, 글 템플릿, 첨부 경로)
 
 ## 로컬에서 보기
 

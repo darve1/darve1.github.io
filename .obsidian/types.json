@@ -1,0 +1,16 @@
+{
+  "types": {
+    "title": "text",
+    "description": "text",
+    "date": "text",
+    "categories": "multitext",
+    "tags": "tags",
+    "published": "checkbox",
+    "pin": "checkbox",
+    "math": "checkbox",
+    "mermaid": "checkbox",
+    "toc": "checkbox",
+    "comments": "checkbox",
+    "image": "text"
+  }
+}
