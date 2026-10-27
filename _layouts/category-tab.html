@@ -1,0 +1,32 @@
+---
+layout: page
+# 사이드바 카테고리 탭 페이지: 탭 본문(소개) + page.category 에 속한 글 목록
+---
+
+{% include lang.html %}
+
+{% assign posts = site.categories[page.category] %}
+
+<div id="page-category" class="category-tab">
+  {{ content }}
+
+  <p class="text-muted small mb-1">
+    <i class="far fa-folder-open fa-fw"></i>
+    {{ posts | size }}
+    {{ site.data.locales[lang].categories.post_measure }}
+  </p>
+
+  {% if posts and posts.size > 0 %}
+    <ul class="content ps-0">
+      {% for post in posts %}
+        <li class="d-flex justify-content-between px-md-3">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          <span class="dash flex-grow-1"></span>
+          {% include datetime.html date=post.date class='text-muted small text-nowrap' lang=lang %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">아직 작성된 글이 없습니다.</p>
+  {% endif %}
+</div>

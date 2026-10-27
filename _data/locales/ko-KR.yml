@@ -1,0 +1,12 @@
+# 테마의 ko-KR 로케일에 덮어쓸 항목만 적습니다 (Jekyll이 테마 로케일과 병합).
+# 탭 이름은 사이드바, 상단 경로, 브라우저 제목에 공통으로 쓰입니다.
+# 키 = _tabs/ 파일 이름
+
+tabs:
+  about: 소개
+  dev: 개발
+  ctf: CTF/Wargame
+  bugbounty: Bug Bounty
+  techdocs: 블로그/기술문서
+  papers: 논문/컨퍼런스
+  contests: 공모전/자격증

@@ -1,0 +1,66 @@
+---
+---
+
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
+
+/* append your custom style below */
+
+/* ---------- 한글 폰트 (Pretendard, _includes/metadata-hook.html 에서 로드) ---------- */
+
+:root {
+  --font-ko: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+    'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.pagination {
+  font-family: var(--font-ko);
+}
+
+/* 한글 단어 중간에서 줄이 바뀌지 않게 */
+.content,
+.post-preview {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* ---------- 사이드바 메뉴 그룹 (_includes/sidebar.html) ---------- */
+
+#sidebar {
+  ul.nav {
+    margin-bottom: 0.75rem;
+  }
+
+  .nav-group-label {
+    margin: 0.5rem 0 0.35rem;
+    padding-left: 2.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sidebar-muted-color);
+    opacity: 0.65;
+    user-select: none;
+  }
+
+  @media all and (min-width: 1650px) {
+    .nav-group-label {
+      padding-left: 3.75rem;
+    }
+  }
+}
