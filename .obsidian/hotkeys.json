@@ -10,5 +10,23 @@
       "modifiers": ["Mod", "Alt"],
       "key": "P"
     }
+  ],
+  "templater-obsidian:_templates/유튜브.md": [
+    {
+      "modifiers": ["Mod", "Alt"],
+      "key": "Y"
+    }
+  ],
+  "templater-obsidian:_templates/글 링크.md": [
+    {
+      "modifiers": ["Mod", "Alt"],
+      "key": "L"
+    }
+  ],
+  "editor:attach-file": [
+    {
+      "modifiers": ["Mod", "Alt"],
+      "key": "F"
+    }
   ]
 }

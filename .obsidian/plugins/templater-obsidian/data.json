@@ -2,7 +2,9 @@
   "templates_folder": "_templates",
   "enabled_templates_hotkeys": [
     "_templates/새 글.md",
-    "_templates/발행.md"
+    "_templates/발행.md",
+    "_templates/유튜브.md",
+    "_templates/글 링크.md"
   ],
   "auto_jump_to_cursor": true,
   "trigger_on_file_creation": false,

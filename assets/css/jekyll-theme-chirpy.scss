@@ -64,3 +64,30 @@ h6,
     }
   }
 }
+
+/* ---------- Obsidian 첨부·링크 (_plugins/obsidian-content.rb) ---------- */
+
+.content {
+  .embed-pdf {
+    display: block;
+    width: 100%;
+    height: 75vh;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--main-border-color);
+    border-radius: 0.5rem;
+  }
+
+  a.file-link i {
+    margin-right: 0.35rem;
+  }
+
+  .callout-title {
+    margin-bottom: 0.25rem;
+  }
+
+  .draft-link {
+    color: var(--text-muted-color);
+    text-decoration: underline dotted;
+    cursor: help;
+  }
+}
