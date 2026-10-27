@@ -21,13 +21,18 @@
 
 이 폴더 자체가 Obsidian 볼트입니다. 설정은 `.obsidian/`에 들어 있습니다.
 
-1. **새 글**: 왼쪽 리본의 "새 고유 노트 만들기" 또는 명령 팔레트(`Ctrl+P`) → `Unique note creator: Create new unique note`
-   → `_posts/YYYY-MM-DD-HHmm.md`가 `_templates/post.md` 내용으로 만들어집니다.
-2. **파일 이름**: 날짜 뒤 `HHmm`을 영문 슬러그로 바꿉니다. 예: `2026-10-27-dreamhack-xss.md` → 주소 `/posts/dreamhack-xss/`
-   (Jekyll은 `YYYY-MM-DD-`로 시작하지 않는 `_posts` 파일을 무시합니다.)
-3. **속성**: `title`, `description`, `categories`(첫 값 = 위 표의 카테고리 이름), `tags`를 채웁니다.
-4. **이미지**: 붙여넣기(`Ctrl+V`)하면 `assets/img/posts/`에 저장되고 블로그에서도 그대로 보입니다.
-5. **공개**: 다 쓰면 `published`를 체크하고 명령 팔레트 → `Git: Commit-and-sync`. 1~2분 뒤 사이트에 반영됩니다.
+| 명령 (`Ctrl+P`) | 단축키 | 하는 일 |
+|:---|:---|:---|
+| `Templater: Create 새 글` | `Ctrl+Alt+N` | 제목 → 카테고리 → 소분류 → 영문 슬러그 → 요약을 묻고 `_posts/YYYY-MM-DD-슬러그.md` 생성 (`published: false`) |
+| `Templater: Insert 발행` | `Ctrl+Alt+P` | 열린 글의 `published`를 체크하고 `Git: Commit-and-sync`로 커밋·푸시 |
+
+1. **새 글**: `Ctrl+Alt+N`. 질문 중 `Esc`를 누르면 아무 파일도 남지 않습니다. 슬러그가 `dreamhack-xss`면 주소는 `/posts/dreamhack-xss/`.
+2. **쓰기**: 이미지는 붙여넣기(`Ctrl+V`)하면 `assets/img/posts/`에 저장되고 블로그에서도 그대로 보입니다.
+3. **발행**: 글을 연 상태에서 `Ctrl+Alt+P`. 1~2분 뒤 사이트에 반영됩니다.
+   이미 발행한 글을 고친 뒤 다시 실행하면 수정 사항이 올라갑니다. (다른 파일의 변경도 함께 커밋됩니다.)
+
+템플릿 원본은 `_templates/새 글.md`, `_templates/발행.md`(Templater 스크립트)이고, 카테고리 목록은 `새 글.md` 안의 `CATEGORIES`에 있습니다.
+단축키는 Obsidian 설정 → 단축키에서 바꿀 수 있습니다.
 
 - `published`가 체크되지 않은 글은 사이트에 나오지 않지만, **공개 레포라 GitHub에서는 원문이 보입니다.**
 - Obsidian을 열면 GitHub의 변경 사항을 자동으로 받아옵니다(pull). 자동 커밋·푸시는 꺼 두었습니다.
@@ -61,7 +66,7 @@ published: true
 - `_layouts/category-tab.html`: 카테고리 메뉴 페이지(소개 + 글 목록)
 - `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard 폰트, 사이드바 스타일
 - `_tabs/about.md`: 자기소개
-- `.obsidian/`, `_templates/post.md`: Obsidian 볼트 설정(Obsidian Git 플러그인, 글 템플릿, 첨부 경로)
+- `.obsidian/`, `_templates/`: Obsidian 볼트 설정(Obsidian Git·Templater 플러그인, 새 글·발행 명령, 첨부 경로)
 
 ## 로컬에서 보기
 

@@ -1,0 +1,14 @@
+{
+  "templater-obsidian:create-_templates/새 글.md": [
+    {
+      "modifiers": ["Mod", "Alt"],
+      "key": "N"
+    }
+  ],
+  "templater-obsidian:_templates/발행.md": [
+    {
+      "modifiers": ["Mod", "Alt"],
+      "key": "P"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "templates_folder": "_templates",
+  "enabled_templates_hotkeys": [
+    "_templates/새 글.md",
+    "_templates/발행.md"
+  ],
+  "auto_jump_to_cursor": true,
+  "trigger_on_file_creation": false,
+  "enable_folder_templates": false,
+  "folder_templates": [],
+  "startup_templates": [],
+  "enable_system_commands": false,
+  "user_scripts_folder": ""
+}
