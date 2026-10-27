@@ -1,5 +1,9 @@
 <!-- The Side Bar -->
-<!-- Chirpy v7.6.0 의 _includes/sidebar.html 을 덮어씀: 카테고리 탭(front matter에 category가 있는 탭)을 별도 그룹으로 표시 -->
+<!--
+  Chirpy v7.6.0 의 _includes/sidebar.html 을 덮어씀
+  - 카테고리 탭(front matter에 category가 있는 탭)을 별도 그룹으로 표시
+  - hidden: true 인 탭은 메뉴에서 숨김 (페이지는 그대로 생성)
+-->
 
 <aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
   <header class="profile-wrapper">
@@ -17,8 +21,9 @@
   </header>
   <!-- .profile-wrapper -->
 
-  {% assign category_tabs = site.tabs | where_exp: 'tab', 'tab.category != nil' %}
-  {% assign main_tabs = site.tabs | where_exp: 'tab', 'tab.category == nil' %}
+  {% assign menu_tabs = site.tabs | where_exp: 'tab', 'tab.hidden != true' %}
+  {% assign category_tabs = menu_tabs | where_exp: 'tab', 'tab.category != nil' %}
+  {% assign main_tabs = menu_tabs | where_exp: 'tab', 'tab.category == nil' %}
 
   <nav class="flex-column flex-grow-1 w-100 ps-0">
     <ul class="nav">
