@@ -16,7 +16,7 @@ timezone: Asia/Seoul
 
 title: darve1.log # the main title
 
-tagline: 만들고, 부수고, 기록합니다 # it will display as the subtitle
+tagline: "" # it will display as the subtitle (비우면 사이드바에 안 보임)
 
 description: >- # used by seo meta and the atom feed
   개발, CTF/Wargame, 버그바운티, 기술 문서, 논문·컨퍼런스, 공모전·자격증 기록을 모아 두는 개인 블로그입니다.
