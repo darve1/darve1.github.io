@@ -29,8 +29,8 @@ order: 4
 
 | 시기 | 내용 |
 |:---|:---|
-| 2026.10 | 나이트 프론티어 3기 활동 시작 |
 | 2026.10 | 기술 블로그 시작 |
+| 2026.10 | 나이트 프론티어 3기 활동 시작 |
 | 2026.07 | Cisco Networking Academy, Cisco Virtual Internship Program 2026 수료 |
 | 2026.06 | AWS AI based Security Hands-on Course 수료 |
 | 2023.09 | 충남대학교 정보보안 동아리 ARGOS 가입 |
