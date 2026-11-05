@@ -84,7 +84,7 @@ _canary_
 
 no_canary와 canary의 디스어셈블을 비교하면, canary에는 main 함수의 프롤로그와 에필로그에 각각 다음 코드가 추가되었습니다.
 
-```nasm
+```text
 ; 프롤로그
 0x0000000000001175 <+12>:    mov    rax,QWORD PTR fs:0x28
 0x000000000000117e <+21>:    mov    QWORD PTR [rbp-0x8],rax
