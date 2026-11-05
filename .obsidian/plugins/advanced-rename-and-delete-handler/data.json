@@ -1,5 +1,7 @@
 {
   "emptyFolderBehavior": "Delete",
+  "excludePaths": [],
+  "includePaths": [],
   "notePriorities": [],
   "rescueAttachmentUsedByMultipleNotesMode": "prompt",
   "shouldDeleteConflictingAttachments": false,
@@ -11,5 +13,8 @@
   "shouldRescueSharedAttachments": true,
   "shouldShowLinkUpdateNotice": true,
   "shouldUpdateFileNameAliases": true,
-  "treatAsAttachmentExtensions": [".excalidraw.md", "property:excalidraw-plugin"]
+  "treatAsAttachmentExtensions": [
+    ".excalidraw.md",
+    "property:excalidraw-plugin"
+  ]
 }
