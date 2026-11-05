@@ -52,3 +52,4 @@ order: 4
 ## 연락처
 
 - GitHub: [@darve1](https://github.com/darve1)
+- LinkedIn: [Dong Ha Lee](https://www.linkedin.com/in/dong-ha-lee-a8a354435/)

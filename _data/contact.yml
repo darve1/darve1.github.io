@@ -10,6 +10,10 @@
   icon: "fas fa-envelope"
   noblank: true # open link in current tab
 
+- type: linkedin
+  icon: "fab fa-linkedin"
+  url: "https://www.linkedin.com/in/dong-ha-lee-a8a354435/"
+
 # Uncomment and complete the url below to enable more contact options
 #
 # - type: mastodon
