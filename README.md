@@ -100,14 +100,16 @@ published: true
 
 ## 커스터마이징한 파일
 
-- `_config.yml`: 언어(ko-KR), 시간대, 제목, 프로필, 다크 모드 고정(`theme_mode: dark`), GoatCounter(`analytics.goatcounter.id`)
+- `_config.yml`: 언어(ko-KR), 시간대, 제목, 프로필, 다크 모드 고정(`theme_mode: dark`)
 - `_data/locales/ko-KR.yml`: 메뉴 이름(카테고리 7개, 소개)
-- `_includes/sidebar.html`: 사이드바 메뉴를 Categories / Explore 그룹으로 나누고, `hidden: true`인 탭은 메뉴에서 숨김, GoatCounter 전체 방문 수 표시
+- `_includes/sidebar.html`: 사이드바 메뉴를 `tree` 명령 출력처럼 표시(`~ 홈` 아래 카테고리 가지와 소분류 가지, 카테고리별 글 수·색 점, 글 없는 카테고리는 흐리게, 읽는 글의 카테고리는 초록), `hidden: true`인 탭은 메뉴에서 숨김
+- `_includes/trending-tags.html`: 빈 파일로 덮어써서 오른쪽 패널의 인기 태그를 숨김
 - `_layouts/home.html`: 홈 맨 위 소개 배너(`_includes/home-banner.html`에서 문구 수정), 카테고리 색 배지
 - `_tabs/tags.md`: 메뉴에서 숨김 (태그 페이지 상단 경로가 `/tags/`를 링크하므로 페이지는 유지)
 - `_tabs/archives.md` 삭제, `_data/contact.yml`에서 RSS 버튼 제거
 - `_layouts/category-tab.html`: 카테고리 메뉴 페이지(소개 + 글 목록)
-- `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard·JetBrains Mono 폰트, 터미널 다크 테마 색, 사이드바 배경, 카테고리 배지 색, 첨부(PDF 뷰어·파일 링크) 스타일
+- `assets/css/jekyll-theme-chirpy.scss` 맨 위 `@use ... with (...)`: 큰 화면(1650px 이상)의 본문 너비 1500px, 사이드바 너비 320px
+- `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard·JetBrains Mono 폰트, 터미널 다크 테마 색, 사이드바 배경, 오른쪽 패널 배치(목차는 위, 최근 업데이트는 맨 아래), 카테고리 배지 색, 첨부(PDF 뷰어·파일 링크) 스타일
 - `assets/img/`: 아바타(`avatar.png`), 파비콘(`favicons/`), 사이드바 배경(`sidebar-bg.png`)
 - `_plugins/obsidian-content.rb`: Obsidian 문법 변환(동영상·오디오·PDF·파일·YouTube·글 링크·콜아웃·이미지 크기)
 - `_tabs/about.md`: 자기소개

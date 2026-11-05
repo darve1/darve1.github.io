@@ -1,15 +1,17 @@
 <!-- The Side Bar -->
 <!--
   Chirpy v7.6.0 의 _includes/sidebar.html 을 덮어씀
-  - 카테고리 탭(front matter에 category가 있는 탭)을 별도 그룹으로 표시
+  - 메뉴를 tree 명령 출력처럼 표시: ~ 홈 아래에 카테고리 탭(front matter에 category가 있는 탭)이 가지로 달림
+  - 카테고리마다 글 수와 색 점(홈 배지와 같은 색)을 보여 주고, 글이 없는 카테고리는 흐리게
+  - 소분류가 있으면 카테고리 아래에 한 단계 더 가지를 쳐서 표시 (/categories/<소분류>/ 로 연결)
+  - 글을 읽는 중이면 그 글의 대분류 카테고리를 초록 글자로 표시
   - hidden: true 인 탭은 메뉴에서 숨김 (페이지는 그대로 생성)
   - tagline 이 비어 있으면 제목 아래 문구를 출력하지 않음
-  - GoatCounter(_config.yml analytics.goatcounter.id)가 있으면 아래쪽에 전체 방문 수 표시
 -->
 
 <aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
   <header class="profile-wrapper">
-    <a href="{{ '/' | relative_url }}" id="avatar" class="rounded-circle">
+    <a href="{{ '/' | relative_url }}" id="avatar" aria-label="홈">
       {%- if site.avatar != empty and site.avatar -%}
         {%- capture avatar_url -%}
           {% include media-url.html src=site.avatar %}
@@ -18,10 +20,12 @@
       {%- endif -%}
     </a>
 
-    <a class="site-title d-block" href="{{ '/' | relative_url }}">{{ site.title }}</a>
-    {%- if site.tagline != empty and site.tagline -%}
-      <p class="site-subtitle fst-italic mb-0">{{ site.tagline }}</p>
-    {%- endif -%}
+    <div>
+      <a class="site-title d-block" href="{{ '/' | relative_url }}">{{ site.title }}</a>
+      {%- if site.tagline != empty and site.tagline -%}
+        <p class="site-subtitle fst-italic mb-0">{{ site.tagline }}</p>
+      {%- endif -%}
+    </div>
   </header>
   <!-- .profile-wrapper -->
 
@@ -29,61 +33,110 @@
   {% assign category_tabs = menu_tabs | where_exp: 'tab', 'tab.category != nil' %}
   {% assign main_tabs = menu_tabs | where_exp: 'tab', 'tab.category == nil' %}
 
-  <nav class="flex-column flex-grow-1 w-100 ps-0">
-    <ul class="nav">
-      <!-- home -->
-      <li class="nav-item{% if page.layout == 'home' %}{{ " active" }}{% endif %}">
-        <a href="{{ '/' | relative_url }}" class="nav-link">
-          <i class="fa-fw fas fa-home"></i>
-          <span>{{ site.data.locales[include.lang].tabs.home | upcase }}</span>
-        </a>
-      </li>
-    </ul>
+  <nav class="sb-nav flex-grow-1 w-100" aria-label="메뉴">
+    <!-- 트리 뿌리: 홈 -->
+    {% assign is_home = false %}
+    {% if page.layout == 'home' %}{% assign is_home = true %}{% endif %}
+    <a
+      href="{{ '/' | relative_url }}"
+      class="sb-row sb-root{% if is_home %} active{% endif %}"
+      {% if is_home %}
+        aria-current="page"
+      {% endif %}
+    >
+      <span class="sb-tilde" aria-hidden="true">~</span>
+      <span class="sb-label">{{ site.data.locales[include.lang].tabs.home }}</span>
+    </a>
 
     <!-- 블로그 카테고리: _tabs/ 중 category 가 지정된 탭 -->
-    <p class="nav-group-label">Categories</p>
-    <ul class="nav nav-group">
+    <ul class="sb-tree">
       {% for tab in category_tabs %}
-        <li class="nav-item{% if tab.url == page.url %}{{ " active" }}{% endif %}">
-          <a href="{{ tab.url | relative_url }}" class="nav-link">
-            <i class="fa-fw {{ tab.icon }}"></i>
-            {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
-
-            <span>{{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title }}</span>
+        {% assign count = site.categories[tab.category] | size %}
+        {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
+        {% assign state = '' %}
+        {% if tab.url == page.url %}
+          {% assign state = ' active' %}
+        {% elsif page.layout == 'post' and page.categories[0] == tab.category %}
+          {% assign state = ' in-path' %}
+        {% endif %}
+        <li class="{{ state | strip }}{% if count == 0 %} empty{% endif %}" data-category="{{ tab.category }}">
+          <a
+            href="{{ tab.url | relative_url }}"
+            class="sb-row"
+            {% if state == ' active' %}
+              aria-current="page"
+            {% endif %}
+          >
+            <span class="sb-dot" aria-hidden="true"></span>
+            <span class="sb-label">
+              {{- site.data.locales[include.lang].tabs.[tab_name] | default: tab.title -}}
+            </span>
+            <span class="sb-count" aria-label="글 {{ count }}개">{{ count }}</span>
           </a>
+
+          <!-- 소분류: 이 카테고리 글들의 두 번째 카테고리 (글 front matter categories: [대분류, 소분류]) -->
+          {% assign subs = '' | split: '' %}
+          {% for post in site.categories[tab.category] %}
+            {% if post.categories[1] %}
+              {% assign subs = subs | push: post.categories[1] %}
+            {% endif %}
+          {% endfor %}
+          {% assign subs = subs | uniq | sort %}
+
+          {% if subs.size > 0 %}
+            <ul class="sb-sub">
+              {% for sub in subs %}
+                {% assign sub_count = 0 %}
+                {% for post in site.categories[tab.category] %}
+                  {% if post.categories[1] == sub %}
+                    {% assign sub_count = sub_count | plus: 1 %}
+                  {% endif %}
+                {% endfor %}
+                {% assign sub_state = '' %}
+                {% if page.layout == 'category' and page.title == sub %}
+                  {% assign sub_state = 'active' %}
+                {% elsif page.layout == 'post' and page.categories[0] == tab.category and page.categories[1] == sub %}
+                  {% assign sub_state = 'in-path' %}
+                {% endif %}
+                <li class="{{ sub_state }}">
+                  <a
+                    href="{{ site.baseurl }}/categories/{{ sub | slugify | url_encode }}/"
+                    class="sb-row"
+                    {% if sub_state == 'active' %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    <span class="sb-label">{{ sub }}</span>
+                    <span class="sb-count" aria-label="글 {{ sub_count }}개">{{ sub_count }}</span>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
         </li>
       {% endfor %}
     </ul>
 
-    <p class="nav-group-label">Explore</p>
-    <ul class="nav">
-      <!-- the real tabs -->
+    <!-- 나머지 탭 (카테고리 전체, 소개) -->
+    <ul class="sb-list">
       {% for tab in main_tabs %}
-        <li class="nav-item{% if tab.url == page.url %}{{ " active" }}{% endif %}">
-          <a href="{{ tab.url | relative_url }}" class="nav-link">
-            <i class="fa-fw {{ tab.icon }}"></i>
-            {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
-
-            <span>{{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title | upcase }}</span>
+        {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
+        <li{% if tab.url == page.url %} class="active"{% endif %}>
+          <a
+            href="{{ tab.url | relative_url }}"
+            class="sb-row"
+            {% if tab.url == page.url %}
+              aria-current="page"
+            {% endif %}
+          >
+            <span class="sb-label">
+              {{- site.data.locales[include.lang].tabs.[tab_name] | default: tab.title -}}
+            </span>
           </a>
         </li>
-        <!-- .nav-item -->
       {% endfor %}
     </ul>
   </nav>
-
-  {% if site.analytics.goatcounter.id != empty and site.analytics.goatcounter.id %}
-    <p class="visit-count">total visits: <span id="visit-total">-</span></p>
-    <script>
-      fetch('https://{{ site.analytics.goatcounter.id }}.goatcounter.com/counter/TOTAL.json')
-        .then((response) => response.json())
-        .then((data) => {
-          const count = data.count.replace(/\D/g, '');
-          document.getElementById('visit-total').textContent = new Intl.NumberFormat().format(count);
-        })
-        .catch(() => {});
-    </script>
-  {% endif %}
 
   <div class="sidebar-bottom d-flex flex-wrap align-items-center w-100">
     {% unless site.theme_mode == 'light' or site.theme_mode == 'dark' %}

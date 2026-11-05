@@ -2,7 +2,9 @@
 ---
 
 @use 'abstracts/variables' with (
-  $theme: '{{ site.theme_mode }}'
+  $theme: '{{ site.theme_mode }}',
+  $main-content-max-width: 1500px, /* 큰 화면(1650px~)의 본문+오른쪽 패널 너비, 기본 1250px */
+  $sidebar-width-large: 320px /* 큰 화면의 사이드바 너비, 기본 300px */
 );
 
 /* prettier-ignore */
@@ -37,32 +39,6 @@ h6,
 .post-preview {
   word-break: keep-all;
   overflow-wrap: break-word;
-}
-
-/* ---------- 사이드바 메뉴 그룹 (_includes/sidebar.html) ---------- */
-
-#sidebar {
-  ul.nav {
-    margin-bottom: 0.75rem;
-  }
-
-  .nav-group-label {
-    margin: 0.5rem 0 0.35rem;
-    padding-left: 2.5rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--sidebar-muted-color);
-    opacity: 0.65;
-    user-select: none;
-  }
-
-  @media all and (min-width: 1650px) {
-    .nav-group-label {
-      padding-left: 3.75rem;
-    }
-  }
 }
 
 /* ---------- Obsidian 첨부·링크 (_plugins/obsidian-content.rb) ---------- */
@@ -177,52 +153,217 @@ h6,
   }
 }
 
-/* 사이드바: 배경 이미지 + 고정폭 제목과 깜빡이는 커서 */
+/* ---------- 사이드바: tree 명령 출력처럼 보이는 메뉴 (_includes/sidebar.html) ---------- */
+
 #sidebar {
+  --sb-pad: 1.5rem;
+  --sb-row-h: 2.35rem;
+  --sb-line: #30363d;
+  --sb-text: #c9d1d9;
+  --sb-dim: #6e7681;
+
+  /* 위쪽은 단색, 아래쪽에만 hexdump 무늬가 비치도록 */
   background:
-    linear-gradient(rgb(1 4 9 / 82%), rgb(1 4 9 / 92%)),
-    url('{{ "/assets/img/sidebar-bg.png" | relative_url }}') center top / cover;
+    linear-gradient(#010409 50%, rgb(1 4 9 / 70%) 100%),
+    url('{{ "/assets/img/sidebar-bg.png" | relative_url }}') center bottom / 100% auto no-repeat,
+    #010409;
+  border-right: 1px solid #21262d;
+  font-family: var(--font-mono);
+
+  @media all and (min-width: 1650px) {
+    --sb-pad: 2.25rem;
+  }
+
+  .profile-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.75rem 0 2.25rem;
+    padding: 0 var(--sb-pad);
+  }
+
+  #avatar {
+    flex: none;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px var(--sb-line);
+
+    img:hover {
+      transform: none;
+    }
+  }
 
   .site-title {
+    margin: 0;
+    color: #e6edf3;
     font-family: var(--font-mono);
+    font-size: 1.3rem;
     font-weight: 700;
+    letter-spacing: 0;
+  }
 
-    &::after {
-      content: '_';
-      animation: term-blink 1s steps(1) infinite;
+  /* 카테고리 트리는 위, 카테고리·소개 목록은 사이드바 맨 아래(아이콘 바로 위) */
+  .sb-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0 var(--sb-pad);
+  }
+
+  .sb-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: var(--sb-row-h);
+    padding: 0 0.6rem;
+    border-radius: 6px;
+    color: var(--sb-text);
+    font-size: 0.875rem;
+    line-height: 1.4;
+
+    &:hover {
+      background: #161b22;
+      color: #e6edf3;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--term-green);
+      outline-offset: 1px;
     }
   }
 
-  .nav-group-label {
-    font-family: var(--font-mono);
-    text-transform: lowercase;
-    letter-spacing: 0.04em;
-
-    &::before {
-      content: '// ';
-    }
+  .sb-root .sb-tilde {
+    color: var(--term-green);
+    font-weight: 700;
   }
 
-  .nav-item.active .nav-link {
-    box-shadow: inset 2px 0 0 var(--term-green);
+  .sb-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .visit-count {
-    width: 100%;
-    margin: 0 0 0.5rem;
-    padding-left: 2.5rem;
-    font-family: var(--font-mono);
+  .sb-count {
+    margin-left: auto;
+    color: var(--sb-dim);
     font-size: 0.75rem;
-    color: var(--sidebar-muted-color);
+  }
 
-    #visit-total {
+  .sb-dot {
+    flex: none;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 2px;
+    background: var(--cat-color);
+  }
+
+  /*
+    가지 선: li마다 세로선 + 가로선. 가로선은 그 li의 첫 줄(행) 가운데,
+    마지막 li는 세로선을 첫 줄 가운데서 멈춤 (소분류가 달려 있어도 맞도록 행 높이 기준)
+  */
+  ul.sb-tree {
+    margin: 0.35rem 0 1.5rem 0.85rem;
+    padding: 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      padding-left: 1rem;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+      }
+
+      &::before {
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid var(--sb-line);
+      }
+
+      &:last-child::before {
+        bottom: auto;
+        height: calc(var(--sb-row-h) / 2);
+      }
+
+      &::after {
+        top: calc(var(--sb-row-h) / 2);
+        width: 0.75rem;
+        border-top: 1px solid var(--sb-line);
+      }
+
+      &.active::after {
+        border-top-color: var(--term-green);
+      }
+    }
+
+    /* 소분류 가지: 부모 카테고리의 색 점 아래에서 갈라짐 */
+    ul.sb-sub {
+      margin: 0 0 0 0.82rem;
+      padding: 0;
+      list-style: none;
+
+      .sb-row {
+        color: #8b949e;
+        font-size: 0.8rem;
+      }
+    }
+
+    .empty {
+      .sb-label {
+        color: var(--sb-dim);
+      }
+
+      .sb-dot {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  ul.sb-list {
+    margin: auto 0 1rem;
+    padding: 0;
+    list-style: none;
+
+    .sb-row {
+      color: #8b949e;
+    }
+  }
+
+  /* 지금 보는 곳 (탭 페이지) 과 지금 보는 글의 카테고리 */
+  .sb-nav .active > .sb-row,
+  .sb-nav .sb-root.active {
+    background: rgb(63 185 80 / 12%);
+    color: var(--term-green);
+
+    .sb-count,
+    .sb-label {
       color: var(--term-green);
     }
   }
 
-  @media all and (min-width: 1650px) {
-    .visit-count {
-      padding-left: 3.75rem;
+  .in-path > .sb-row .sb-label {
+    color: var(--term-green);
+  }
+
+  .sidebar-bottom {
+    padding: 0 var(--sb-pad);
+
+    > a {
+      border-radius: 8px;
+      background: transparent;
+
+      &:not(:focus-visible) {
+        box-shadow: 0 0 0 1px var(--sb-line);
+      }
+
+      &:hover {
+        color: var(--term-green);
+        background: rgb(63 185 80 / 8%);
+      }
     }
   }
 }
@@ -230,6 +371,32 @@ h6,
 #breadcrumb,
 .post-meta {
   font-family: var(--font-mono);
+}
+
+/* 오른쪽 패널: 목차(글 페이지)는 위, 최근 업데이트는 화면 맨 아래에 고정 (인기 태그는 _includes/trending-tags.html 에서 숨김) */
+@media all and (min-width: 1200px) {
+  #panel-wrapper {
+    position: sticky;
+    top: 3rem; /* 상단 바 높이 */
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 3rem);
+    margin-bottom: calc(3rem - 100vh); /* 패널 높이가 페이지 길이를 늘리지 않게 */
+
+    > .access {
+      order: 1;
+      position: static;
+      margin: auto 0 7rem; /* 맨 위로 버튼(#back-to-top)과 겹치지 않게 */
+    }
+
+    > #toc-wrapper {
+      flex: 0 1 auto;
+      min-height: 0;
+      max-height: none;
+      margin-bottom: 1.5rem;
+    }
+  }
 }
 
 /* 홈 글 목록 카드 */
@@ -258,7 +425,7 @@ h6,
   }
 }
 
-/* 카테고리별 색 배지 (_layouts/home.html) */
+/* 카테고리 색: 홈 배지(_layouts/home.html)와 사이드바 점(_includes/sidebar.html)이 같이 씀 */
 .cat-badge {
   --cat-color: #8b949e;
 
@@ -271,34 +438,34 @@ h6,
   font-family: var(--font-mono);
   font-size: 0.8rem;
   line-height: 1.5;
+}
 
-  &[data-category='개발'] {
-    --cat-color: #58a6ff;
-  }
+[data-category='개발'] {
+  --cat-color: #58a6ff;
+}
 
-  &[data-category='공부'] {
-    --cat-color: #3fb950;
-  }
+[data-category='공부'] {
+  --cat-color: #3fb950;
+}
 
-  &[data-category='CTF/Wargame'] {
-    --cat-color: #f85149;
-  }
+[data-category='CTF/Wargame'] {
+  --cat-color: #f85149;
+}
 
-  &[data-category='Bug Bounty'] {
-    --cat-color: #d29922;
-  }
+[data-category='Bug Bounty'] {
+  --cat-color: #d29922;
+}
 
-  &[data-category='블로그/기술문서'] {
-    --cat-color: #a371f7;
-  }
+[data-category='블로그/기술문서'] {
+  --cat-color: #a371f7;
+}
 
-  &[data-category='논문/컨퍼런스'] {
-    --cat-color: #39c5cf;
-  }
+[data-category='논문/컨퍼런스'] {
+  --cat-color: #39c5cf;
+}
 
-  &[data-category='공모전/자격증'] {
-    --cat-color: #db61a2;
-  }
+[data-category='공모전/자격증'] {
+  --cat-color: #db61a2;
 }
 
 .cat-sub {
@@ -381,7 +548,6 @@ h6,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #sidebar .site-title::after,
   .home-banner .cursor {
     animation: none;
   }
