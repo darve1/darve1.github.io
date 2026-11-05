@@ -5,6 +5,7 @@
 tabs:
   about: 소개
   dev: 개발
+  study: 공부
   ctf: CTF/Wargame
   bugbounty: Bug Bounty
   techdocs: 블로그/기술문서

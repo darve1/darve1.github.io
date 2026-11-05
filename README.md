@@ -8,6 +8,7 @@
 | 메뉴 | 카테고리 이름 (글 front matter) | 탭 파일 |
 |:---|:---|:---|
 | 개발 | `개발` | `_tabs/dev.md` |
+| 공부 | `공부` | `_tabs/study.md` |
 | CTF/Wargame | `CTF/Wargame` | `_tabs/ctf.md` |
 | Bug Bounty | `Bug Bounty` | `_tabs/bugbounty.md` |
 | 블로그/기술문서 | `블로그/기술문서` | `_tabs/techdocs.md` |
@@ -99,7 +100,7 @@ published: true
 ## 커스터마이징한 파일
 
 - `_config.yml`: 언어(ko-KR), 시간대, 제목, 프로필
-- `_data/locales/ko-KR.yml`: 메뉴 이름(카테고리 6개, 소개)
+- `_data/locales/ko-KR.yml`: 메뉴 이름(카테고리 7개, 소개)
 - `_includes/sidebar.html`: 사이드바 메뉴를 Categories / Explore 그룹으로 나누고, `hidden: true`인 탭은 메뉴에서 숨김
 - `_tabs/tags.md`: 메뉴에서 숨김 (태그 페이지 상단 경로가 `/tags/`를 링크하므로 페이지는 유지)
 - `_tabs/archives.md` 삭제, `_data/contact.yml`에서 RSS 버튼 제거
