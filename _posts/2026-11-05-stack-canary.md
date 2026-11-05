@@ -3,6 +3,7 @@ title: "스택 카나리 (Stack Canary)"
 description: "스택 버퍼 오버플로우로부터 반환 주소를 보호하는 스택 카나리의 원리를 예제로 확인해 봅니다"
 categories: ["공부", "System Hacking"]
 tags: [pwnable, system-hacking, stack-canary, bof]
+image: /assets/posts/2026-11-05-stack-canary/thumbnail.png
 published: true
 ---
 

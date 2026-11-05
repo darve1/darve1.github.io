@@ -1,16 +1,25 @@
 {
+  "data_version": 2,
+  "command_timeout": 5,
   "templates_folder": "_templates",
+  "templates_pairs": [],
+  "trigger_on_file_creation_mode": "none",
+  "auto_jump_to_cursor": true,
+  "jump_to_cursor_after_file_name": false,
+  "shell_path": "",
+  "user_scripts_folder": "",
+  "folder_templates": [],
+  "file_templates": [],
+  "syntax_highlighting": true,
+  "syntax_highlighting_mobile": false,
   "enabled_templates_hotkeys": [
     "_templates/새 글.md",
     "_templates/발행.md",
     "_templates/유튜브.md",
-    "_templates/글 링크.md"
+    "_templates/글 링크.md",
+    "_templates/썸네일.md"
   ],
-  "auto_jump_to_cursor": true,
-  "trigger_on_file_creation": false,
-  "enable_folder_templates": false,
-  "folder_templates": [],
   "startup_templates": [],
-  "enable_system_commands": false,
-  "user_scripts_folder": ""
+  "intellisense_render": "1",
+  "ignore_folders_on_creation": []
 }

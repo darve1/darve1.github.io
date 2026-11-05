@@ -23,6 +23,12 @@
       "key": "L"
     }
   ],
+  "templater-obsidian:_templates/썸네일.md": [
+    {
+      "modifiers": ["Mod", "Alt"],
+      "key": "T"
+    }
+  ],
   "editor:attach-file": [
     {
       "modifiers": ["Mod", "Alt"],

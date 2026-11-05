@@ -29,6 +29,7 @@
 | `Insert attachment` (Obsidian 기본 명령) | `Ctrl+Alt+F` | 파일 선택 창에서 고른 파일을 글의 첨부 폴더로 복사하고 커서 위치에 넣기 |
 | `Templater: Insert 유튜브` | `Ctrl+Alt+Y` | YouTube 주소와 설명을 묻고 영상 넣기 |
 | `Templater: Insert 글 링크` | `Ctrl+Alt+L` | 다른 글을 제목으로 골라 링크 넣기 (`[비공개]` 표시 = 아직 발행 전) |
+| `Templater: Insert 썸네일` | `Ctrl+Alt+T` | 글의 첨부 폴더에 있는 이미지 중 하나를 골라 썸네일(`image`)로 지정 (홈 카드와 글 맨 위에 보임, 1200x630 비율 권장) |
 
 1. **새 글**: `Ctrl+Alt+N`. 질문 중 `Esc`를 누르면 아무 파일도 남지 않습니다. 슬러그가 `dreamhack-xss`면 주소는 `/posts/dreamhack-xss/`.
 2. **쓰기**: 사진·동영상·파일은 붙여넣기(`Ctrl+V`), 끌어다 놓기, `Ctrl+Alt+F`로 넣습니다. ([첨부와 링크](#첨부와-링크))
@@ -99,16 +100,18 @@ published: true
 
 ## 커스터마이징한 파일
 
-- `_config.yml`: 언어(ko-KR), 시간대, 제목, 프로필
+- `_config.yml`: 언어(ko-KR), 시간대, 제목, 프로필, 다크 모드 고정(`theme_mode: dark`), GoatCounter(`analytics.goatcounter.id`)
 - `_data/locales/ko-KR.yml`: 메뉴 이름(카테고리 7개, 소개)
-- `_includes/sidebar.html`: 사이드바 메뉴를 Categories / Explore 그룹으로 나누고, `hidden: true`인 탭은 메뉴에서 숨김
+- `_includes/sidebar.html`: 사이드바 메뉴를 Categories / Explore 그룹으로 나누고, `hidden: true`인 탭은 메뉴에서 숨김, GoatCounter 전체 방문 수 표시
+- `_layouts/home.html`: 홈 맨 위 소개 배너(`_includes/home-banner.html`에서 문구 수정), 카테고리 색 배지
 - `_tabs/tags.md`: 메뉴에서 숨김 (태그 페이지 상단 경로가 `/tags/`를 링크하므로 페이지는 유지)
 - `_tabs/archives.md` 삭제, `_data/contact.yml`에서 RSS 버튼 제거
 - `_layouts/category-tab.html`: 카테고리 메뉴 페이지(소개 + 글 목록)
-- `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard 폰트, 사이드바 스타일, 첨부(PDF 뷰어·파일 링크) 스타일
+- `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard·JetBrains Mono 폰트, 터미널 다크 테마 색, 사이드바 배경, 카테고리 배지 색, 첨부(PDF 뷰어·파일 링크) 스타일
+- `assets/img/`: 아바타(`avatar.png`), 파비콘(`favicons/`), 사이드바 배경(`sidebar-bg.png`)
 - `_plugins/obsidian-content.rb`: Obsidian 문법 변환(동영상·오디오·PDF·파일·YouTube·글 링크·콜아웃·이미지 크기)
 - `_tabs/about.md`: 자기소개
-- `.obsidian/`, `_templates/`: Obsidian 볼트 설정과 명령(새 글·발행·유튜브·글 링크)
+- `.obsidian/`, `_templates/`: Obsidian 볼트 설정과 명령(새 글·발행·유튜브·글 링크·썸네일)
   - 플러그인: Obsidian Git, Templater, Custom Attachment Location(글별 첨부 폴더), Advanced Rename and Delete Handler(이름 변경·삭제 시 첨부 따라가기)
 
 ## 로컬에서 보기
