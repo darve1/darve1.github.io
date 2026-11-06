@@ -4,6 +4,7 @@
   - 메뉴를 tree 명령 출력처럼 표시: ~ 홈 아래에 카테고리 탭(front matter에 category가 있는 탭)이 가지로 달림
   - 카테고리마다 글 수와 색 점(홈 배지와 같은 색)을 보여 주고, 글이 없는 카테고리는 흐리게
   - 소분류가 있으면 카테고리 아래에 한 단계 더 가지를 쳐서 표시 (/categories/<소분류>/ 로 연결)
+  - 소분류는 가지 갈림점의 ▸ 버튼으로 접고 펼침. 처음에는 지금 보는 곳만 펼치고, 직접 바꾼 상태는 기억
   - 글을 읽는 중이면 그 글의 대분류 카테고리를 초록 글자로 표시
   - hidden: true 인 탭은 메뉴에서 숨김 (페이지는 그대로 생성)
   - tagline 이 비어 있으면 제목 아래 문구를 출력하지 않음
@@ -53,13 +54,35 @@
       {% for tab in category_tabs %}
         {% assign count = site.categories[tab.category] | size %}
         {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
+        {% assign tab_label = site.data.locales[include.lang].tabs.[tab_name] | default: tab.title %}
         {% assign state = '' %}
         {% if tab.url == page.url %}
           {% assign state = ' active' %}
         {% elsif page.layout == 'post' and page.categories[0] == tab.category %}
           {% assign state = ' in-path' %}
         {% endif %}
-        <li class="{{ state | strip }}{% if count == 0 %} empty{% endif %}" data-category="{{ tab.category }}">
+
+        <!-- 소분류: 이 카테고리 글들의 두 번째 카테고리 (글 front matter categories: [대분류, 소분류]) -->
+        {% assign subs = '' | split: '' %}
+        {% for post in site.categories[tab.category] %}
+          {% if post.categories[1] %}
+            {% assign subs = subs | push: post.categories[1] %}
+          {% endif %}
+        {% endfor %}
+        {% assign subs = subs | uniq | sort %}
+
+        <!-- 처음에는 지금 보는 곳(이 카테고리 탭, 이 카테고리의 글, 이 카테고리의 소분류 페이지)만 펼침 -->
+        {% assign open = false %}
+        {% if state != '' %}
+          {% assign open = true %}
+        {% elsif page.layout == 'category' and subs contains page.title %}
+          {% assign open = true %}
+        {% endif %}
+
+        <li
+          class="{{ state | strip }}{% if count == 0 %} empty{% endif %}{% if subs.size > 0 %} has-sub{% endif %}"
+          data-category="{{ tab.category }}"
+        >
           <a
             href="{{ tab.url | relative_url }}"
             class="sb-row"
@@ -68,23 +91,22 @@
             {% endif %}
           >
             <span class="sb-dot" aria-hidden="true"></span>
-            <span class="sb-label">
-              {{- site.data.locales[include.lang].tabs.[tab_name] | default: tab.title -}}
-            </span>
+            <span class="sb-label">{{ tab_label }}</span>
             <span class="sb-count" aria-label="글 {{ count }}개">{{ count }}</span>
           </a>
 
-          <!-- 소분류: 이 카테고리 글들의 두 번째 카테고리 (글 front matter categories: [대분류, 소분류]) -->
-          {% assign subs = '' | split: '' %}
-          {% for post in site.categories[tab.category] %}
-            {% if post.categories[1] %}
-              {% assign subs = subs | push: post.categories[1] %}
-            {% endif %}
-          {% endfor %}
-          {% assign subs = subs | uniq | sort %}
-
           {% if subs.size > 0 %}
-            <ul class="sb-sub">
+            <button
+              type="button"
+              class="sb-toggle"
+              aria-expanded="{{ open }}"
+              aria-controls="sb-sub-{{ forloop.index }}"
+              aria-label="{{ tab_label }} 소분류"
+            >
+              <i class="fas fa-angle-right" aria-hidden="true"></i>
+            </button>
+
+            <ul class="sb-sub" id="sb-sub-{{ forloop.index }}"{% unless open %} hidden{% endunless %}>
               {% for sub in subs %}
                 {% assign sub_count = 0 %}
                 {% for post in site.categories[tab.category] %}
@@ -116,6 +138,36 @@
         </li>
       {% endfor %}
     </ul>
+
+    <!-- 소분류 접기/펼치기: 직접 접거나 편 상태는 브라우저에 기억 (localStorage 'sb-open') -->
+    <script>
+      (function () {
+        var KEY = 'sb-open';
+        var saved = {};
+        try {
+          saved = JSON.parse(localStorage.getItem(KEY)) || {};
+        } catch (e) {}
+        document.querySelectorAll('#sidebar .sb-toggle').forEach(function (btn) {
+          var key = btn.parentElement.getAttribute('data-category');
+          var sub = document.getElementById(btn.getAttribute('aria-controls'));
+          var set = function (open) {
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            sub.hidden = !open;
+          };
+          if (Object.prototype.hasOwnProperty.call(saved, key)) {
+            set(saved[key]);
+          }
+          btn.addEventListener('click', function () {
+            var open = btn.getAttribute('aria-expanded') !== 'true';
+            set(open);
+            saved[key] = open;
+            try {
+              localStorage.setItem(KEY, JSON.stringify(saved));
+            } catch (e) {}
+          });
+        });
+      })();
+    </script>
 
     <!-- 나머지 탭 (카테고리 전체, 소개) -->
     <ul class="sb-list">

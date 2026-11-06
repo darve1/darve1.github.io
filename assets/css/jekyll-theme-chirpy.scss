@@ -300,6 +300,57 @@ h6,
       }
     }
 
+    /* 소분류 접기 버튼: 세로선과 가로선이 만나는 갈림점 위의 작은 상자 (누르는 영역은 24px) */
+    .sb-toggle {
+      position: absolute;
+      top: calc(var(--sb-row-h) / 2 - 12px);
+      left: -12px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--sb-dim);
+
+      i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 14px;
+        height: 14px;
+        border: 1px solid var(--sb-line);
+        border-radius: 3px;
+        background: #010409;
+        font-size: 0.6rem;
+        transition: transform 0.15s;
+      }
+
+      &[aria-expanded='true'] i {
+        transform: rotate(90deg);
+      }
+
+      &:hover {
+        color: var(--term-green);
+
+        i {
+          border-color: var(--term-green);
+        }
+      }
+
+      &:focus-visible {
+        outline: none;
+
+        i {
+          outline: 2px solid var(--term-green);
+          outline-offset: 1px;
+        }
+      }
+    }
+
     /* 소분류 가지: 부모 카테고리의 색 점 아래에서 갈라짐 */
     ul.sb-sub {
       margin: 0 0 0 0.82rem;
@@ -548,6 +599,10 @@ h6,
 }
 
 @media (prefers-reduced-motion: reduce) {
+  #sidebar .sb-toggle i {
+    transition: none;
+  }
+
   .home-banner .cursor {
     animation: none;
   }
