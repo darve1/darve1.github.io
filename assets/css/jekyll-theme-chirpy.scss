@@ -16,10 +16,10 @@
 
 /* append your custom style below */
 
-/* ---------- 한글 폰트 (Pretendard, _includes/metadata-hook.html 에서 로드) ---------- */
+/* ---------- 본문·제목 글꼴 (SUIT, _includes/metadata-hook.html 에서 로드) ---------- */
 
 :root {
-  --font-ko: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+  --font-ko: 'SUIT Variable', 'SUIT', -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
     'Noto Sans KR', 'Malgun Gothic', sans-serif;
 }
 
@@ -71,7 +71,7 @@ h6,
 /* ---------- 터미널 다크 테마 (_config.yml 의 theme_mode: dark) ---------- */
 
 :root {
-  --font-mono: 'JetBrains Mono', 'Pretendard Variable', Pretendard, Consolas, monospace;
+  --font-mono: 'D2Coding', 'SUIT Variable', Consolas, monospace;
   --term-green: #3fb950;
   --term-blue: #58a6ff;
 }
@@ -410,6 +410,76 @@ h6,
   font-family: var(--font-mono);
 }
 
+/*
+  ---------- 넓은 화면 가운데 정렬 ----------
+  Chirpy 는 본문(75%) + 오른쪽 패널(25%) 구성이라, 패널이 비어 보이는 페이지에선 본문이 왼쪽으로 쏠려 보임.
+  - 글이 아닌 페이지(홈·카테고리·소개 등, 1200px~): 오른쪽 패널을 숨기고 본문·푸터·상단 바를 $center-w 로 가운데
+  - 글 페이지(1400px~): 본문을 가운데에 두고 목차는 오른쪽 여백에. 더 좁으면 기존처럼 본문 + 목차
+    (Chirpy 는 1200px 이상에서 목차 팝업 버튼을 숨기므로, 그 너비에서 목차 패널을 없애지 않음)
+  <html> 의 layout-* 클래스는 _includes/metadata-hook.html 이 붙임
+*/
+$center-w: 900px;
+
+@media all and (min-width: 1200px) {
+  html:not(.layout-post) {
+    #panel-wrapper {
+      display: none !important;
+    }
+
+    #topbar-wrapper {
+      align-self: center;
+      width: 100%;
+      max-width: $center-w;
+    }
+
+    #main-wrapper > .container > .row {
+      justify-content: center;
+
+      > main,
+      > #tail-wrapper {
+        flex: 0 0 100%;
+        width: 100%;
+        max-width: $center-w;
+      }
+    }
+
+    /* 맨 위로 버튼: 가운데 본문과 겹치지 않게 화면 오른쪽 끝으로 */
+    #back-to-top {
+      right: 1rem;
+    }
+  }
+}
+
+@media all and (min-width: 1400px) {
+  html.layout-post {
+    /* 상단 바도 본문 폭에 맞춤 (양옆 200px 칸을 뺀 폭, 최대 $center-w) */
+    #topbar-wrapper {
+      align-self: center;
+      width: 100%;
+      max-width: min(#{$center-w}, calc(100% - 400px));
+    }
+
+    /* 양옆 칸은 최소 200px(오른쪽이 목차), 본문은 남는 폭에서 최대 $center-w */
+    #main-wrapper > .container > .row {
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) minmax(0, $center-w) minmax(200px, 1fr);
+
+      > main,
+      > #tail-wrapper {
+        grid-column: 2;
+        width: 100%;
+        max-width: none;
+      }
+
+      > #panel-wrapper {
+        grid-column: 3;
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  }
+}
+
 /* 오른쪽 패널: 목차(글 페이지)는 위, 최근 업데이트는 화면 맨 아래에 고정 (인기 태그는 _includes/trending-tags.html 에서 숨김) */
 @media all and (min-width: 1200px) {
   #panel-wrapper {
@@ -637,9 +707,9 @@ h6,
   게임마다 분위기를 색·글꼴·모양으로만 표현 (로고·공식 그림 없음)
   - 리그 오브 레전드: 짙은 남색 + 금색 이중 테두리와 마름모 장식, 함렛(명조)
   - 발로란트: 잘린 모서리 + 빨간 사선, 검은고딕
-  - CS2: 레이더 격자 + 조준선 + 경고 줄무늬, 고정폭
+  - CS2: 위쪽 HUD(CT 파랑·T 금색 라운드 점수와 1:55 라운드 시간) + 연막 + 조준선 + 흐린 레이더 격자, 고정폭
   - 마인크래프트: 잔디 덮인 흙 블록, 갈무리 픽셀 글꼴 (누르면 블록 모드)
-  - 이터널 리턴: 해 질 녘 섬 색 + 점선 제한 구역 원, 오르빗
+  - 이터널 리턴: 밤하늘 색 + DAY 1 낮/밤 표시 + 직접 그린 섬 지도(빨간 구역 = 제한 구역), 오르빗
 */
 .content ul.game-list {
   display: grid;
@@ -759,53 +829,97 @@ h6,
 }
 
 .content .gt-cs2 {
+  --ct: #5d79ae;
+  --t: #de9b35;
+
+  overflow: hidden;
+  padding-top: 0.6rem;
   border: 1px solid #39404a;
   border-radius: 2px;
   background:
-    repeating-linear-gradient(0deg, rgb(222 155 53 / 8%) 0 1px, transparent 1px 14px),
-    repeating-linear-gradient(90deg, rgb(222 155 53 / 8%) 0 1px, transparent 1px 14px),
-    #14181c;
+    repeating-linear-gradient(0deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 3%) 0 1px, transparent 1px 14px),
+    linear-gradient(180deg, #1a1f24 0%, #121519 100%);
 
-  /* 조준선 */
+  /* 위쪽 HUD: 양 팀 라운드 점수와 라운드 시간 */
+  .gt-hud {
+    display: flex;
+    align-self: center;
+    align-items: stretch;
+    margin-bottom: 0.45rem;
+    font: 700 0.62rem/1 var(--font-mono);
+
+    b,
+    i {
+      padding: 0.2rem 0.35rem;
+      font-style: normal;
+      font-weight: 700;
+    }
+
+    .ct {
+      background: rgb(93 121 174 / 85%);
+      color: #e9f0ff;
+    }
+
+    i {
+      background: rgb(0 0 0 / 55%);
+      color: #f2f2f2;
+    }
+
+    .t {
+      background: rgb(222 155 53 / 85%);
+      color: #1c1306;
+    }
+  }
+
+  /* 연막: CS2 의 상징인 연막탄 구름 (오른쪽 아래) */
   &::before {
     content: '';
     position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 20px;
-    height: 20px;
+    right: -18px;
+    bottom: -20px;
+    width: 92px;
+    height: 70px;
     background:
-      linear-gradient(#de9b35, #de9b35) 50% 0 / 2px 7px no-repeat,
-      linear-gradient(#de9b35, #de9b35) 50% 100% / 2px 7px no-repeat,
-      linear-gradient(#de9b35, #de9b35) 0 50% / 7px 2px no-repeat,
-      linear-gradient(#de9b35, #de9b35) 100% 50% / 7px 2px no-repeat;
+      radial-gradient(circle at 30% 60%, rgb(190 196 204 / 30%) 0 18px, transparent 30px),
+      radial-gradient(circle at 60% 40%, rgb(170 176 186 / 26%) 0 22px, transparent 34px),
+      radial-gradient(circle at 75% 75%, rgb(150 156 166 / 24%) 0 16px, transparent 28px);
+    filter: blur(3px);
+    pointer-events: none;
   }
 
-  /* 경고 줄무늬 */
+  /* 조준선 */
   &::after {
     content: '';
     position: absolute;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background: repeating-linear-gradient(45deg, #de9b35 0 6px, #14181c 6px 12px);
+    top: 50%;
+    right: 14px;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-40%);
+    background:
+      linear-gradient(#9ff59a, #9ff59a) 50% 0 / 2px 6px no-repeat,
+      linear-gradient(#9ff59a, #9ff59a) 50% 100% / 2px 6px no-repeat,
+      linear-gradient(#9ff59a, #9ff59a) 0 50% / 6px 2px no-repeat,
+      linear-gradient(#9ff59a, #9ff59a) 100% 50% / 6px 2px no-repeat;
   }
 
   .gt-name {
-    color: #e8e2d0;
+    position: relative;
+    color: #f0ebe0;
     font-family: var(--font-mono);
     font-weight: 700;
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     letter-spacing: 0.04em;
   }
 
   .gt-genre {
-    color: #de9b35;
+    position: relative;
+    color: var(--t);
   }
 
-  &:hover::before {
-    filter: brightness(1.6);
+  &:hover::after {
+    filter: drop-shadow(0 0 3px #9ff59a);
   }
 }
 
@@ -865,34 +979,40 @@ h6,
 }
 
 .content .gt-er {
-  border: 1px solid rgb(94 242 255 / 30%);
+  overflow: hidden;
+  padding-top: 0.6rem;
+  border: 1px solid rgb(94 242 255 / 28%);
   border-radius: 10px;
-  background: linear-gradient(140deg, #1d1342 0%, #0e2a4a 100%);
+  background:
+    radial-gradient(circle at 18% 0%, rgb(255 214 120 / 12%), transparent 55%),
+    linear-gradient(160deg, #1b1442 0%, #0c2440 100%);
 
-  /* 점선 제한 구역 (좁은 타일에서도 이름과 겹치지 않게 오른쪽 아래) */
-  &::before {
-    content: '';
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: 28px;
-    height: 28px;
-    border: 1px dashed rgb(94 242 255 / 65%);
-    border-radius: 50%;
-  }
+  /* 낮/밤 표시: 해 + DAY 1 */
+  .gt-cycle {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.45rem;
+    padding: 0.15rem 0.4rem 0.15rem 0.3rem;
+    border: 1px solid rgb(255 214 120 / 45%);
+    border-radius: 999px;
+    color: #ffd678;
+    font: 700 0.6rem/1 var(--font-mono);
 
-  &::after {
-    content: '';
-    position: absolute;
-    right: 21px;
-    bottom: 21px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ff6b9a;
+    &::before {
+      content: '';
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: #ffd678;
+      box-shadow: 0 0 6px rgb(255 214 120 / 70%);
+    }
   }
 
   .gt-name {
+    position: relative;
+    z-index: 1;
     color: #e8fbff;
     font-family: 'Orbit', sans-serif;
     font-weight: 400;
@@ -901,11 +1021,43 @@ h6,
   }
 
   .gt-genre {
+    position: relative;
+    z-index: 1;
     color: #5ef2ff;
   }
 
+  /* 직접 그린 섬 지도: 빨간 구역 = 제한 구역 */
+  .gt-map {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 46px;
+    height: 36px;
+
+    .land {
+      fill: rgb(46 120 128 / 55%);
+      stroke: rgb(94 242 255 / 80%);
+      stroke-width: 1;
+      stroke-linejoin: round;
+    }
+
+    .zone {
+      fill: rgb(255 77 109 / 55%);
+    }
+
+    .edge {
+      fill: none;
+      stroke: rgb(94 242 255 / 45%);
+      stroke-width: 0.6;
+    }
+  }
+
   &:hover {
-    border-color: rgb(94 242 255 / 65%);
+    border-color: rgb(94 242 255 / 60%);
+
+    .zone {
+      fill: rgb(255 77 109 / 75%);
+    }
   }
 }
 
@@ -920,7 +1072,7 @@ $bevel:
   inset -3px -3px 0 rgb(0 0 0 / 45%);
 
 :root.block-mode[data-bs-theme] {
-  --font-ko: 'Galmuri11', 'Pretendard Variable', sans-serif;
+  --font-ko: 'Galmuri11', 'SUIT Variable', sans-serif;
   --font-mono: 'GalmuriMono11', 'Galmuri11', monospace;
   --term-green: #8fd65a;
   --link-color: #8fd65a;

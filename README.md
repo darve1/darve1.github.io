@@ -117,7 +117,8 @@ published: true
 - `_tabs/archives.md` 삭제, `_data/contact.yml`에서 RSS 버튼 제거
 - `_layouts/category-tab.html`: 카테고리 메뉴 페이지(소개 + 글 목록)
 - `assets/css/jekyll-theme-chirpy.scss` 맨 위 `@use ... with (...)`: 큰 화면(1650px 이상)의 본문 너비 1500px, 사이드바 너비 320px
-- `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard·JetBrains Mono 폰트, 터미널 다크 테마 색, 사이드바 배경, 오른쪽 패널 배치(목차는 위, 최근 업데이트는 맨 아래), 카테고리 배지 색, 첨부(PDF 뷰어·파일 링크) 스타일
+- 가운데 정렬(같은 파일의 "넓은 화면 가운데 정렬", `$center-w: 900px`): 글이 아닌 페이지는 1200px 이상에서 오른쪽 패널을 숨기고 본문을 가운데로, 글 페이지는 1400px 이상에서 본문을 가운데에 두고 목차를 오른쪽 칸에
+- `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: SUIT(본문·제목)·D2Coding(고정폭, 한글도 고정폭) 폰트, 터미널 다크 테마 색, 사이드바 배경, 오른쪽 패널 배치(목차는 위, 최근 업데이트는 맨 아래), 카테고리 배지 색, 첨부(PDF 뷰어·파일 링크) 스타일
 - `assets/img/`: 아바타(`avatar.png`), 파비콘(`favicons/`), 사이드바 배경(`sidebar-bg.png`)
 - `_plugins/obsidian-content.rb`: Obsidian 문법 변환(동영상·오디오·PDF·파일·YouTube·글 링크·콜아웃·이미지 크기)
 - `_tabs/about.md`: 자기소개. 맨 아래 "좋아하는 게임" 타일(`game-list`, 게임마다 `gt-lol`·`gt-val`·`gt-cs2`·`gt-mc`·`gt-er` 스타일)

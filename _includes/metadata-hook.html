@@ -1,11 +1,15 @@
-<!-- 한글 웹폰트 Pretendard: assets/css/jekyll-theme-chirpy.scss 에서 적용 -->
+<!--
+  글꼴 (assets/css/jekyll-theme-chirpy.scss 의 --font-ko / --font-mono 에서 적용)
+  - 본문·제목: SUIT Variable 2.0.5
+  - 고정폭(코드·날짜·메뉴): D2Coding, 자주 쓰는 한글 2,350자 subset. 한글도 고정폭이라 코드 속 한글 칸이 맞음
+    (저장소에 버전 태그가 없어서 커밋으로 고정)
+-->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+  href="https://cdn.jsdelivr.net/gh/wan2land/d2coding@e2659bacb50fd3e5f81b1beededb73ffebda134d/d2coding-subset.css"
 >
-<!-- 터미널 테마 고정폭 글꼴 JetBrains Mono (한글은 Pretendard로 대체) -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
 
 <!--
   anime.js 등장 연출 (assets/js/intro.js). 아래 인라인 스크립트는 화면을 그리기 전에 어떤 연출을 할지 정해서
@@ -34,6 +38,7 @@
     {%- if page.layout == 'post' %}
     root.classList.add('intro-post');
     {%- endif %}
+    root.classList.add('layout-{{ page.layout | default: "none" }}');
     setTimeout(function () {
       root.classList.remove('intro-sidebar', 'intro-home', 'intro-post');
     }, 3000);

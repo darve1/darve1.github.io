@@ -24,8 +24,7 @@ order: 4
 |:---|:---|
 | 2023.03 | 충남대학교 입학 |
 | 2023.09 | 충남대학교 정보보안 동아리 ARGOS 가입 |
-| 2026.06 | AWS AI based Security Hands-on Course 수료 |
-| 2026.07 | Cisco Networking Academy, Cisco Virtual Internship Program 2026 수료 |
+| 2026.06.29 ~ 07.31 | Cisco Virtual Internship Program 2026 수료 (Cisco Networking Academy, 약 5주)<br>자가학습 6/29~7/24 · 프로젝트 7/27~7/30 · 수료식·CTF 7/31 |
 | 2026.10 | 나이트 프론티어 3기 활동 시작 |
 | 2026.10 | 기술 블로그 시작 |
 
@@ -38,6 +37,7 @@ order: 4
 
 <!--
   게임 타일: 게임마다 분위기를 색·글꼴·모양으로만 표현 (로고·공식 그림은 쓰지 않음). 스타일은 assets/css/jekyll-theme-chirpy.scss 의 "게임 타일".
+  CS2 는 위쪽 HUD(양 팀 라운드 점수와 라운드 시간), 이터널 리턴은 낮/밤 표시와 직접 그린 섬 지도(빨간 곳 = 제한 구역).
   제목 글꼴(함렛·검은고딕·오르빗)은 타일 이름 글자만 받도록 text= 로 줄여서 불러옴. 이름을 바꾸면 text= 글자도 같이 바꾸기.
   마인크래프트는 button: 누르면 블록 모드 (assets/js/block-mode.js)
 -->
@@ -46,9 +46,21 @@ order: 4
 <ul class="game-list">
   <li class="gt gt-lol"><span class="gt-name">리그 오브 레전드</span><span class="gt-genre">MOBA</span></li>
   <li class="gt gt-val"><span class="gt-name">발로란트</span><span class="gt-genre">전술 FPS</span></li>
-  <li class="gt gt-cs2"><span class="gt-name">CS2</span><span class="gt-genre">전술 FPS</span></li>
+  <li class="gt gt-cs2">
+    <span class="gt-hud" aria-hidden="true"><b class="ct">CT 0</b><i>1:55</i><b class="t">0 T</b></span>
+    <span class="gt-name">CS2</span><span class="gt-genre">전술 FPS</span>
+  </li>
   <li class="gt gt-mc">
     <button type="button" class="block-egg gt-name" title="눌러 보세요">마인크래프트</button><span class="gt-genre">샌드박스</span>
   </li>
-  <li class="gt gt-er"><span class="gt-name">이터널 리턴</span><span class="gt-genre">배틀로얄</span></li>
+  <li class="gt gt-er">
+    <span class="gt-cycle" aria-hidden="true">DAY 1</span>
+    <span class="gt-name">이터널 리턴</span><span class="gt-genre">배틀로얄</span>
+    <svg class="gt-map" viewBox="0 0 44 34" aria-hidden="true">
+      <path class="land" d="M6 15 L10 6 L19 3 L29 5 L37 9 L40 18 L36 26 L27 31 L16 30 L8 25 Z"/>
+      <path class="zone" d="M6 15 L10 6 L19 3 L21 16 Z"/>
+      <path class="zone" d="M21 16 L40 18 L36 26 L30 29 Z"/>
+      <path class="edge" d="M19 3 L21 16 L16 30 M21 16 L40 18 M21 16 L6 15 M21 16 L30 29 M29 5 L21 16"/>
+    </svg>
+  </li>
 </ul>
