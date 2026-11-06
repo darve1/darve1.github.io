@@ -24,7 +24,7 @@ order: 4
 |:---|:---|
 | 2023.03 | 충남대학교 입학 |
 | 2023.09 | 충남대학교 정보보안 동아리 ARGOS 가입 |
-| 2026.06.29 ~ 07.31 | Cisco Virtual Internship Program 2026 수료 (Cisco Networking Academy, 약 5주)<br>자가학습 6/29~7/24 · 프로젝트 7/27~7/30 · 수료식·CTF 7/31 |
+| 2026.06.29 ~ 07.31 | Cisco Virtual Internship Program 2026 수료 |
 | 2026.10 | 나이트 프론티어 3기 활동 시작 |
 | 2026.10 | 기술 블로그 시작 |
 
