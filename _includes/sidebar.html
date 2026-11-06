@@ -4,7 +4,7 @@
   - 메뉴를 tree 명령 출력처럼 표시: ~ 홈 아래에 카테고리 탭(front matter에 category가 있는 탭)이 가지로 달림
   - 카테고리마다 글 수와 색 점(홈 배지와 같은 색)을 보여 주고, 글이 없는 카테고리는 흐리게
   - 소분류가 있으면 카테고리 아래에 한 단계 더 가지를 쳐서 표시 (/categories/<소분류>/ 로 연결)
-  - 소분류는 가지 갈림점의 ▸ 버튼으로 접고 펼침. 처음에는 지금 보는 곳만 펼치고, 직접 바꾼 상태는 기억
+  - 소분류는 가지 갈림점의 ▸ 버튼으로 접고 펼침. 페이지마다 지금 보는 곳만 펼친 상태로 시작
   - 글을 읽는 중이면 그 글의 대분류 카테고리를 초록 글자로 표시
   - hidden: true 인 탭은 메뉴에서 숨김 (페이지는 그대로 생성)
   - tagline 이 비어 있으면 제목 아래 문구를 출력하지 않음
@@ -139,34 +139,15 @@
       {% endfor %}
     </ul>
 
-    <!-- 소분류 접기/펼치기: 직접 접거나 편 상태는 브라우저에 기억 (localStorage 'sb-open') -->
+    <!-- 소분류 접기/펼치기: 페이지마다 위의 기본 상태(지금 보는 곳만 펼침)에서 시작 -->
     <script>
-      (function () {
-        var KEY = 'sb-open';
-        var saved = {};
-        try {
-          saved = JSON.parse(localStorage.getItem(KEY)) || {};
-        } catch (e) {}
-        document.querySelectorAll('#sidebar .sb-toggle').forEach(function (btn) {
-          var key = btn.parentElement.getAttribute('data-category');
-          var sub = document.getElementById(btn.getAttribute('aria-controls'));
-          var set = function (open) {
-            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-            sub.hidden = !open;
-          };
-          if (Object.prototype.hasOwnProperty.call(saved, key)) {
-            set(saved[key]);
-          }
-          btn.addEventListener('click', function () {
-            var open = btn.getAttribute('aria-expanded') !== 'true';
-            set(open);
-            saved[key] = open;
-            try {
-              localStorage.setItem(KEY, JSON.stringify(saved));
-            } catch (e) {}
-          });
+      document.querySelectorAll('#sidebar .sb-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var open = btn.getAttribute('aria-expanded') !== 'true';
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
         });
-      })();
+      });
     </script>
 
     <!-- 나머지 탭 (카테고리 전체, 소개) -->

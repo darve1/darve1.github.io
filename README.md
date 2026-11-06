@@ -102,7 +102,7 @@ published: true
 
 - `_config.yml`: 언어(ko-KR), 시간대, 제목, 프로필, 다크 모드 고정(`theme_mode: dark`)
 - `_data/locales/ko-KR.yml`: 메뉴 이름(카테고리 7개, 소개)
-- `_includes/sidebar.html`: 사이드바 메뉴를 `tree` 명령 출력처럼 표시(`~ 홈` 아래 카테고리 가지와 소분류 가지(▸ 버튼으로 접기, 처음엔 지금 보는 곳만 펼침, 바꾼 상태는 브라우저에 기억), 카테고리별 글 수·색 점, 글 없는 카테고리는 흐리게, 읽는 글의 카테고리는 초록), `hidden: true`인 탭은 메뉴에서 숨김
+- `_includes/sidebar.html`: 사이드바 메뉴를 `tree` 명령 출력처럼 표시(`~ 홈` 아래 카테고리 가지와 소분류 가지(▸ 버튼으로 접기, 페이지마다 지금 보는 곳만 펼친 상태로 시작), 카테고리별 글 수·색 점, 글 없는 카테고리는 흐리게, 읽는 글의 카테고리는 초록), `hidden: true`인 탭은 메뉴에서 숨김
 - `_includes/trending-tags.html`: 빈 파일로 덮어써서 오른쪽 패널의 인기 태그를 숨김
 - `_layouts/home.html`: 홈 맨 위 소개 배너(`_includes/home-banner.html`에서 문구 수정), 카테고리 색 배지
 - `_tabs/tags.md`: 메뉴에서 숨김 (태그 페이지 상단 경로가 `/tags/`를 링크하므로 페이지는 유지)
