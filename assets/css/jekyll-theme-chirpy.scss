@@ -174,24 +174,10 @@ h6,
     --sb-pad: 2.25rem;
   }
 
+  /* 제목만: 아래 '~ 홈' 글자와 왼쪽 줄을 맞춤 */
   .profile-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 2.75rem 0 2.25rem;
-    padding: 0 var(--sb-pad);
-  }
-
-  #avatar {
-    flex: none;
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 12px;
-    box-shadow: 0 0 0 1px var(--sb-line);
-
-    img:hover {
-      transform: none;
-    }
+    margin: 2.75rem 0 2rem;
+    padding: 0 var(--sb-pad) 0 calc(var(--sb-pad) + 0.6rem);
   }
 
   .site-title {
@@ -646,60 +632,210 @@ h6,
   }
 }
 
-/* ---------- 소개 탭: 좋아하는 게임 타일 (_tabs/about.md, 타일 색은 li 의 --g) ---------- */
+/*
+  ---------- 소개 탭: 게임 타일 (_tabs/about.md) ----------
+  게임마다 분위기를 색·글꼴·모양으로만 표현 (로고·공식 그림 없음)
+  - 리그 오브 레전드: 짙은 남색 + 금색 이중 테두리와 마름모 장식, 함렛(명조)
+  - 발로란트: 잘린 모서리 + 빨간 사선, 검은고딕
+  - CS2: 레이더 격자 + 조준선 + 경고 줄무늬, 고정폭
+  - 마인크래프트: 잔디 덮인 흙 블록, 갈무리 픽셀 글꼴 (누르면 블록 모드)
+  - 이터널 리턴: 해 질 녘 섬 색 + 점선 제한 구역 원, 오르빗
+*/
 .content ul.game-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
-  gap: 0.75rem;
-  margin: 1rem 0 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.1rem 0 0;
   padding: 0;
   list-style: none;
 
-  > li {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 5.25rem;
-    margin: 0;
-    padding: 0.85rem 0.95rem 0.75rem;
-    border: 1px solid #21262d;
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--g) 8%, #0d1117);
-    box-shadow: inset 0 2px 0 var(--g);
-    color: #e6edf3;
-    font-weight: 600;
-    line-height: 1.35;
-    word-break: keep-all;
-    transition: border-color 0.15s;
+  /* 넓은 화면에서는 5개를 한 줄로 (타일이 좁아지니 옆 여백을 조금 줄임) */
+  @media all and (min-width: 768px) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.75rem;
 
-    &::after {
-      content: attr(data-genre);
-      margin-top: 0.7rem;
-      color: var(--g);
-      font: 500 0.72rem/1 var(--font-mono);
-    }
-
-    &:hover {
-      border-color: color-mix(in srgb, var(--g) 55%, #21262d);
-    }
-
-    &:has(.block-egg:focus-visible) {
-      outline: 2px solid var(--g);
-      outline-offset: 2px;
+    .gt {
+      padding: 1rem 0.85rem 0.85rem;
     }
   }
+}
 
-  /* 마인크래프트 타일: 타일 전체가 버튼 (누르면 블록 모드) */
-  .block-egg {
-    padding: 0;
+.content .gt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 6.25rem;
+  margin: 0;
+  padding: 1rem 1.05rem 0.85rem;
+  color: #e6edf3;
+  word-break: keep-all;
+
+  .gt-name {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .gt-genre {
+    margin-top: 0.9rem;
+    font: 600 0.7rem/1 var(--font-mono);
+  }
+}
+
+.content .gt-lol {
+  border: 1px solid #785a28;
+  background: linear-gradient(165deg, #0a1428 0%, #0c2532 100%);
+  box-shadow:
+    inset 0 0 0 3px #0a1428,
+    inset 0 0 0 4px rgb(200 170 110 / 40%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    width: 9px;
+    height: 9px;
+    transform: translateX(-50%) rotate(45deg);
+    border: 1px solid #c8aa6e;
+    background: #0a1428;
+  }
+
+  .gt-name {
+    background: linear-gradient(180deg, #f0e6d2 20%, #c8aa6e 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-family: 'Hahmlet', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .gt-genre {
+    color: #c8aa6e;
+    letter-spacing: 0.2em;
+  }
+
+  &:hover {
+    box-shadow:
+      inset 0 0 0 3px #0a1428,
+      inset 0 0 0 4px #c8aa6e;
+  }
+}
+
+.content .gt-val {
+  background: #0f1923;
+  box-shadow: inset 3px 0 0 #ff4655;
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+
+  &::before {
+    content: '';
+    position: absolute;
+    right: 14px;
+    bottom: 16px;
+    width: 26px;
+    height: 3px;
+    transform: skewX(-35deg);
+    background: #ff4655;
+    box-shadow: 0 -7px 0 rgb(255 70 85 / 40%);
+    transition: width 0.15s;
+  }
+
+  .gt-name {
+    color: #ece8e1;
+    font-family: 'Black Han Sans', sans-serif;
+    font-weight: 400;
+    font-size: 1.35rem;
+  }
+
+  .gt-genre {
+    color: #ff4655;
+  }
+
+  &:hover::before {
+    width: 40px;
+  }
+}
+
+.content .gt-cs2 {
+  border: 1px solid #39404a;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(0deg, rgb(222 155 53 / 8%) 0 1px, transparent 1px 14px),
+    repeating-linear-gradient(90deg, rgb(222 155 53 / 8%) 0 1px, transparent 1px 14px),
+    #14181c;
+
+  /* 조준선 */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 20px;
+    height: 20px;
+    background:
+      linear-gradient(#de9b35, #de9b35) 50% 0 / 2px 7px no-repeat,
+      linear-gradient(#de9b35, #de9b35) 50% 100% / 2px 7px no-repeat,
+      linear-gradient(#de9b35, #de9b35) 0 50% / 7px 2px no-repeat,
+      linear-gradient(#de9b35, #de9b35) 100% 50% / 7px 2px no-repeat;
+  }
+
+  /* 경고 줄무늬 */
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background: repeating-linear-gradient(45deg, #de9b35 0 6px, #14181c 6px 12px);
+  }
+
+  .gt-name {
+    color: #e8e2d0;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+  }
+
+  .gt-genre {
+    color: #de9b35;
+  }
+
+  &:hover::before {
+    filter: brightness(1.6);
+  }
+}
+
+.content .gt-mc {
+  border: 3px solid #000;
+  background:
+    url('{{ "/assets/img/blocks/grass.png" | relative_url }}') left top / 32px 32px repeat-x,
+    url('{{ "/assets/img/blocks/dirt.png" | relative_url }}') left 32px / 32px 32px repeat;
+  box-shadow:
+    inset 3px 3px 0 rgb(255 255 255 / 15%),
+    inset -3px -3px 0 rgb(0 0 0 / 45%);
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  image-rendering: pixelated;
+  cursor: pointer;
+
+  .gt-name {
+    padding: 0.4rem 0 0;
     border: 0;
     background: none;
     color: inherit;
-    font: inherit;
+    font-family: 'Galmuri11', sans-serif;
+    font-weight: 400;
+    font-size: 0.95rem;
     text-align: left;
+    text-shadow: inherit;
+    white-space: nowrap;
     cursor: pointer;
 
+    /* 타일 전체가 버튼 */
     &::before {
       content: '';
       position: absolute;
@@ -710,27 +846,105 @@ h6,
       outline: none;
     }
   }
+
+  .gt-genre {
+    color: #f3ead8;
+    font-family: 'Galmuri9', monospace;
+    font-weight: 400;
+  }
+
+  &:hover .gt-genre::after,
+  &:has(.gt-name:focus-visible) .gt-genre::after {
+    content: ' · 눌러 보세요';
+  }
+
+  &:has(.gt-name:focus-visible) {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+}
+
+.content .gt-er {
+  border: 1px solid rgb(94 242 255 / 30%);
+  border-radius: 10px;
+  background: linear-gradient(140deg, #1d1342 0%, #0e2a4a 100%);
+
+  /* 점선 제한 구역 (좁은 타일에서도 이름과 겹치지 않게 오른쪽 아래) */
+  &::before {
+    content: '';
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 28px;
+    height: 28px;
+    border: 1px dashed rgb(94 242 255 / 65%);
+    border-radius: 50%;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 21px;
+    bottom: 21px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ff6b9a;
+  }
+
+  .gt-name {
+    color: #e8fbff;
+    font-family: 'Orbit', sans-serif;
+    font-weight: 400;
+    font-size: 1.1rem;
+    text-shadow: 0 0 12px rgb(94 242 255 / 40%);
+  }
+
+  .gt-genre {
+    color: #5ef2ff;
+  }
+
+  &:hover {
+    border-color: rgb(94 242 255 / 65%);
+  }
 }
 
 /*
   ---------- 블록 모드 이스터에그 (assets/js/block-mode.js) ----------
-  소개 탭의 마인크래프트 타일을 누르면 60초 동안: 갈무리 픽셀 글꼴, 직접 만든 흙·잔디·돌 텍스처
-  (assets/img/blocks/), 모서리 없는 굵은 테두리와 입체 음영, 픽셀 글자 그림자
+  소개 탭의 마인크래프트 타일을 누르면 켜지고, 다시 누르거나 '끝내기'·새로고침 전까지 모든 페이지에서 유지.
+  갈무리 픽셀 글꼴, 직접 만든 흙·잔디·돌·심층암 텍스처(assets/img/blocks/), 모서리 없는 굵은 테두리와 입체 음영,
+  픽셀 글자 그림자, 제목 앞 잔디 블록, 카드 위 흰 선택 테두리, 화면 아래 핫바(숫자 키 1~9)
 */
+$bevel:
+  inset 3px 3px 0 rgb(255 255 255 / 14%),
+  inset -3px -3px 0 rgb(0 0 0 / 45%);
+
 :root.block-mode[data-bs-theme] {
   --font-ko: 'Galmuri11', 'Pretendard Variable', sans-serif;
   --font-mono: 'GalmuriMono11', 'Galmuri11', monospace;
   --term-green: #8fd65a;
   --link-color: #8fd65a;
-  --main-bg: #1c2016;
+  --main-bg: #2e2f36;
   --main-border-color: #000;
   --heading-color: #f3ead8;
   --text-color: #e4dccb;
 
   image-rendering: pixelated;
+
+  ::selection {
+    background: rgb(143 214 90 / 45%);
+  }
 }
 
 .block-mode {
+  body {
+    background: url('{{ "/assets/img/blocks/deepslate.png" | relative_url }}') 0 0 / 64px 64px;
+  }
+
+  .content {
+    line-height: 1.85;
+  }
+
   #sidebar {
     --sb-text: #f3ead8;
     --sb-dim: #cbbba0;
@@ -770,12 +984,16 @@ h6,
   .cat-badge {
     border: 3px solid #000 !important;
     border-radius: 0 !important;
-    box-shadow:
-      inset 3px 3px 0 rgb(255 255 255 / 14%),
-      inset -3px -3px 0 rgb(0 0 0 / 45%) !important;
+    box-shadow: $bevel !important;
   }
 
-  #avatar,
+  /* 블록을 겨눈 것처럼: 글 카드에 마우스를 올리면 흰 선택 테두리 */
+  #post-list .card-wrapper:hover {
+    box-shadow:
+      0 0 0 3px #fff,
+      $bevel !important;
+  }
+
   .sb-row,
   .sb-dot,
   .sb-toggle i,
@@ -792,49 +1010,177 @@ h6,
   .card-title {
     text-shadow: 2px 2px 0 rgb(0 0 0 / 65%);
   }
+
+  /* 본문 제목 앞 '##' 대신 작은 잔디 블록 */
+  .content h2::before {
+    content: '';
+    display: inline-block;
+    width: 0.8em;
+    height: 0.8em;
+    margin-right: 0.45em;
+    vertical-align: -0.02em;
+    background: url('{{ "/assets/img/blocks/grass.png" | relative_url }}') 0 0 / 100% 100%;
+    box-shadow:
+      0 0 0 2px #000,
+      inset -2px -2px 0 rgb(0 0 0 / 35%);
+  }
+
+  /* 핫바가 화면 아래(푸터)를 가리지 않게 */
+  #main-wrapper > .container {
+    min-height: calc(100vh - 5.5rem);
+  }
+
+  #main-wrapper {
+    padding-bottom: 5.5rem;
+  }
 }
 
-/* 남은 시간 칩 (화면 아래 가운데) */
-.block-chip {
+/* 켜고 끌 때 계단 원으로 번지는 전환: 페이지 전체를 한 장으로 다룸 */
+.block-wipe::view-transition-old(root),
+.block-wipe::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+.block-wipe #sidebar,
+.block-wipe #topbar-wrapper {
+  view-transition-name: none;
+}
+
+/* ---------- 블록 모드 화면 아래: 아이템 이름 + 핫바 9칸 + 끝내기 ---------- */
+.block-ui {
   position: fixed;
   left: 50%;
-  bottom: 1rem;
+  bottom: 0.9rem;
   z-index: 1080;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.6rem;
-  padding: 0.5rem 0.75rem;
   transform: translateX(-50%);
-  border: 3px solid #000;
-  background: #3b3b3b;
-  box-shadow:
-    inset 3px 3px 0 rgb(255 255 255 / 18%),
-    inset -3px -3px 0 rgb(0 0 0 / 45%);
-  color: #fff;
-  font: 0.85rem/1.2 'Galmuri11', monospace;
+  font-family: 'Galmuri11', monospace;
   text-shadow: 2px 2px 0 #000;
-  white-space: nowrap;
 
-  button {
-    padding: 0.2rem 0.6rem;
-    border: 2px solid #000;
-    background: #6d6d6d;
-    box-shadow:
-      inset 2px 2px 0 rgb(255 255 255 / 25%),
-      inset -2px -2px 0 rgb(0 0 0 / 40%);
+  /* 핫바 위에 뜨는 칸 이름 */
+  .hb-name {
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    margin: 0;
+    padding: 0.15rem 0.5rem;
+    transform: translateX(-50%);
+    background: rgb(16 0 16 / 85%);
+    border: 2px solid #2a0a5e;
     color: #fff;
-    font: inherit;
-    text-shadow: inherit;
-    cursor: pointer;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.12s;
+    pointer-events: none;
+
+    &.is-on {
+      opacity: 1;
+    }
+  }
+}
+
+.block-hotbar {
+  display: flex;
+  padding: 3px;
+  border: 3px solid #000;
+  background: rgb(40 40 40 / 92%);
+  box-shadow: $bevel;
+
+  .hb-slot {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0 1px;
+    border: 2px solid #1a1a1a;
+    background: #5a5a5a;
+    box-shadow:
+      inset 2px 2px 0 rgb(0 0 0 / 45%),
+      inset -2px -2px 0 rgb(255 255 255 / 18%);
+    text-decoration: none;
 
     &:hover {
-      background: #6f8f45;
+      background: #6e6e6e;
     }
 
     &:focus-visible {
-      outline: 2px solid #fff;
-      outline-offset: 2px;
+      outline: none;
+      border-color: #fff;
     }
+
+    &[aria-current='page'] {
+      z-index: 1;
+      margin: -3px -2px;
+      width: calc(2.75rem + 6px);
+      height: calc(2.75rem + 6px);
+      border: 3px solid #fff;
+      box-shadow:
+        0 0 0 2px #000,
+        inset 2px 2px 0 rgb(0 0 0 / 45%);
+    }
+  }
+
+  /* 칸 안의 블록 아이콘: 카테고리 색 블록, 홈은 잔디 블록, 소개는 아바타 */
+  .hb-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+    background: var(--cat-color, #8b949e);
+    box-shadow:
+      inset 3px 3px 0 rgb(255 255 255 / 28%),
+      inset -3px -3px 0 rgb(0 0 0 / 38%),
+      0 0 0 2px rgb(0 0 0 / 70%);
+  }
+
+  .hb-home .hb-icon {
+    background: url('{{ "/assets/img/blocks/grass.png" | relative_url }}') 0 0 / 100% 100%;
+  }
+
+  .hb-about .hb-icon {
+    background: url('{{ "/assets/img/avatar.png" | relative_url }}') center / cover;
+  }
+
+  .hb-key {
+    position: absolute;
+    top: 1px;
+    left: 3px;
+    color: #fff;
+    font-size: 0.6rem;
+    line-height: 1;
+  }
+}
+
+.hb-exit {
+  height: 2.6rem;
+  padding: 0 0.8rem;
+  border: 3px solid #000;
+  background: #6d6d6d;
+  box-shadow: $bevel;
+  color: #fff;
+  font: 0.85rem/1 'Galmuri11', monospace;
+  text-shadow: 2px 2px 0 #000;
+  cursor: pointer;
+
+  &:hover {
+    background: #6f8f45;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+  }
+}
+
+/* 좁은 화면: 핫바 대신 끝내기 버튼만 */
+@media all and (max-width: 767.98px) {
+  .block-ui .block-hotbar,
+  .block-ui .hb-name {
+    display: none;
   }
 }
 

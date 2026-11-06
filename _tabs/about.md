@@ -37,13 +37,18 @@ order: 4
 ## 좋아하는 게임
 
 <!--
-  게임 타일: li 하나가 게임 하나. data-genre 는 타일 아래 작은 글자, style 의 --g 는 타일 색.
-  마인크래프트는 button: 누르면 잠깐 블록 모드가 됨 (assets/js/block-mode.js)
+  게임 타일: 게임마다 분위기를 색·글꼴·모양으로만 표현 (로고·공식 그림은 쓰지 않음). 스타일은 assets/css/jekyll-theme-chirpy.scss 의 "게임 타일".
+  제목 글꼴(함렛·검은고딕·오르빗)은 타일 이름 글자만 받도록 text= 로 줄여서 불러옴. 이름을 바꾸면 text= 글자도 같이 바꾸기.
+  마인크래프트는 button: 누르면 블록 모드 (assets/js/block-mode.js)
 -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Hahmlet:wght@700&family=Orbit&display=swap&text=%EA%B7%B8%EB%84%90%EB%93%9C%EB%9E%80%EB%A0%88%EB%A1%9C%EB%A6%AC%EB%B0%9C%EB%B8%8C%EC%98%A4%EC%9D%B4%EC%A0%84%ED%84%B0%ED%84%B4%ED%8A%B8">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
 <ul class="game-list">
-  <li style="--g: #c8aa6e" data-genre="MOBA">리그 오브 레전드</li>
-  <li style="--g: #ff4655" data-genre="전술 FPS">발로란트</li>
-  <li style="--g: #de9b35" data-genre="전술 FPS">CS2</li>
-  <li style="--g: #6fbf3f" data-genre="샌드박스"><button type="button" class="block-egg" title="눌러 보세요">마인크래프트</button></li>
-  <li style="--g: #a78bfa" data-genre="배틀로얄">이터널 리턴</li>
+  <li class="gt gt-lol"><span class="gt-name">리그 오브 레전드</span><span class="gt-genre">MOBA</span></li>
+  <li class="gt gt-val"><span class="gt-name">발로란트</span><span class="gt-genre">전술 FPS</span></li>
+  <li class="gt gt-cs2"><span class="gt-name">CS2</span><span class="gt-genre">전술 FPS</span></li>
+  <li class="gt gt-mc">
+    <button type="button" class="block-egg gt-name" title="눌러 보세요">마인크래프트</button><span class="gt-genre">샌드박스</span>
+  </li>
+  <li class="gt gt-er"><span class="gt-name">이터널 리턴</span><span class="gt-genre">배틀로얄</span></li>
 </ul>

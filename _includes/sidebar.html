@@ -7,20 +7,11 @@
   - 소분류는 가지 갈림점의 ▸ 버튼으로 접고 펼침. 페이지마다 지금 보는 곳만 펼친 상태로 시작
   - 글을 읽는 중이면 그 글의 대분류 카테고리를 초록 글자로 표시
   - hidden: true 인 탭은 메뉴에서 숨김 (페이지는 그대로 생성)
-  - tagline 이 비어 있으면 제목 아래 문구를 출력하지 않음
+  - 맨 위는 사이트 제목만 (아바타 이미지는 넣지 않음), tagline 이 비어 있으면 제목 아래 문구를 출력하지 않음
 -->
 
 <aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end">
   <header class="profile-wrapper">
-    <a href="{{ '/' | relative_url }}" id="avatar" aria-label="홈">
-      {%- if site.avatar != empty and site.avatar -%}
-        {%- capture avatar_url -%}
-          {% include media-url.html src=site.avatar %}
-        {%- endcapture -%}
-        <img src="{{- avatar_url -}}" width="112" height="112" alt="avatar" onerror="this.style.display='none'">
-      {%- endif -%}
-    </a>
-
     <div>
       <a class="site-title d-block" href="{{ '/' | relative_url }}">{{ site.title }}</a>
       {%- if site.tagline != empty and site.tagline -%}
