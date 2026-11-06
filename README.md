@@ -111,6 +111,7 @@ published: true
   - 사이드바 트리: 창(탭)에서 처음 보는 페이지에서 한 번, 가지 선이 그려지며 차례로 나타남
   - 홈 배너: 사이트 밖에서 들어오면 명령이 한 글자씩 입력됨, 배너를 누르면 다시 재생
   - 홈 글 카드: 사이트 밖에서 들어오면 화면에 보이는 카드부터 차례로 나타남
+  - 글 머리: 글을 열 때마다 부제가 떠오르고, 날짜 숫자가 무작위 숫자에서 풀리며 맞춰진 뒤 작성자 줄이 나타남
   - 동작 줄이기 설정이면 위치는 움직이지 않고 나타나기와 타이핑만 함
 - `_tabs/tags.md`: 메뉴에서 숨김 (태그 페이지 상단 경로가 `/tags/`를 링크하므로 페이지는 유지)
 - `_tabs/archives.md` 삭제, `_data/contact.yml`에서 RSS 버튼 제거
@@ -119,7 +120,9 @@ published: true
 - `_includes/metadata-hook.html`, `assets/css/jekyll-theme-chirpy.scss`: Pretendard·JetBrains Mono 폰트, 터미널 다크 테마 색, 사이드바 배경, 오른쪽 패널 배치(목차는 위, 최근 업데이트는 맨 아래), 카테고리 배지 색, 첨부(PDF 뷰어·파일 링크) 스타일
 - `assets/img/`: 아바타(`avatar.png`), 파비콘(`favicons/`), 사이드바 배경(`sidebar-bg.png`)
 - `_plugins/obsidian-content.rb`: Obsidian 문법 변환(동영상·오디오·PDF·파일·YouTube·글 링크·콜아웃·이미지 크기)
-- `_tabs/about.md`: 자기소개
+- `_tabs/about.md`: 자기소개. 맨 아래 "좋아하는 게임" 타일(`game-list`, 타일 색은 `--g`)
+  - 마인크래프트 타일을 누르면 60초 동안 블록 모드(갈무리 픽셀 글꼴, `assets/img/blocks/`의 직접 만든 흙·잔디·돌 텍스처). `assets/js/block-mode.js`
+- 강조 박스(`prompt-info/tip/warning/danger`, Obsidian `> [!tip]`): 어두운 박스 + 왼쪽 색 선 + 고정폭 종류 이름 (`assets/css/jekyll-theme-chirpy.scss`의 "강조 박스")
 - `.obsidian/`, `_templates/`: Obsidian 볼트 설정과 명령(새 글·발행·유튜브·글 링크·썸네일)
   - 플러그인: Obsidian Git, Templater, Custom Attachment Location(글별 첨부 폴더), Advanced Rename and Delete Handler(이름 변경·삭제 시 첨부 따라가기)
 

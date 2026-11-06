@@ -3,14 +3,15 @@
   1. 사이드바 트리: 창(탭)을 처음 열었을 때 한 번, 가지 선이 그려지며 위에서부터 차례로 나타남
   2. 홈 배너: 사이트 밖에서 들어왔을 때 명령이 한 글자씩 입력되고 결과가 뜸. 배너를 누르면 다시 재생
   3. 홈 글 카드: 사이트 밖에서 들어왔을 때 화면에 보이는 카드부터 차례로 나타남
-  어느 연출을 할지는 metadata-hook 의 인라인 스크립트가 <html> 에 intro-sidebar / intro-home 클래스로 정함.
+  4. 글 머리: 글을 열 때마다 부제가 떠오르고, 날짜 숫자가 무작위 숫자에서 풀리며 맞춰진 뒤 작성자 줄이 나타남
+  어느 연출을 할지는 metadata-hook 의 인라인 스크립트가 <html> 에 intro-sidebar / intro-home / intro-post 클래스로 정함.
   동작 줄이기 설정이면 위치는 움직이지 않고 나타나기(투명도)와 타이핑만 함.
 */
 (function () {
   var root = document.documentElement;
   var a = window.anime;
   if (!a) {
-    root.classList.remove('intro-sidebar', 'intro-home');
+    root.classList.remove('intro-sidebar', 'intro-home', 'intro-post');
     return;
   }
 
@@ -134,4 +135,63 @@
   }
 
   root.classList.remove('intro-home');
+
+  /* 4. 글 머리: 부제(설명) → 게시·업데이트 날짜(숫자가 풀리며 맞춰짐) → 작성자·읽는 시간 */
+  var header = root.classList.contains('intro-post') ? document.querySelector('article > header') : null;
+  if (header) {
+    var desc = header.querySelector('.post-desc');
+    var dates = Array.prototype.slice.call(header.querySelectorAll('.post-meta > span'));
+    var byline = header.querySelector('.post-meta > .d-flex');
+    var parts = [desc].concat(dates, [byline]).filter(Boolean);
+    var times = Array.prototype.slice.call(header.querySelectorAll('.post-meta > span time'));
+    var finals = times.map(function (t) {
+      return t.textContent.trim();
+    });
+    var decode = { p: 0 };
+
+    var scramble = function (text, p) {
+      var keep = Math.floor(p * text.length);
+      return text.replace(/\d/g, function (d, i) {
+        return i < keep ? d : String((Math.random() * 10) | 0);
+      });
+    };
+
+    a.utils.set(parts, { opacity: 0 });
+    root.classList.remove('intro-post');
+
+    var tl = a.createTimeline({
+      onComplete: function () {
+        times.forEach(function (t, i) {
+          t.textContent = finals[i];
+        });
+        clean(parts);
+      }
+    });
+    if (desc) {
+      tl.add(desc, { opacity: [0, 1], y: still ? 0 : [6, 0], duration: 420, ease: 'outCubic' }, 120);
+    }
+    dates.forEach(function (span, i) {
+      tl.add(span, { opacity: [0, 1], duration: 200, ease: 'linear' }, 320 + i * 90);
+    });
+    if (times.length > 0) {
+      tl.add(
+        decode,
+        {
+          p: [0, 1],
+          duration: 700,
+          ease: 'linear',
+          onUpdate: function () {
+            times.forEach(function (t, i) {
+              t.textContent = scramble(finals[i], decode.p);
+            });
+          }
+        },
+        320
+      );
+    }
+    if (byline) {
+      tl.add(byline, { opacity: [0, 1], duration: 280, ease: 'linear' }, 860);
+    }
+  }
+  root.classList.remove('intro-post');
 })();

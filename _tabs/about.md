@@ -29,15 +29,21 @@ order: 4
 | 2026.10 | 나이트 프론티어 3기 활동 시작 |
 | 2026.10 | 기술 블로그 시작 |
 
-## 좋아하는 게임
-
-- 리그 오브 레전드
-- 발로란트
-- CS2
-- 마인크래프트
-- 이터널 리턴
-
 ## 연락처
 
 - GitHub: [@darve1](https://github.com/darve1)
 - LinkedIn: [Dong Ha Lee](https://www.linkedin.com/in/dong-ha-lee-a8a354435/)
+
+## 좋아하는 게임
+
+<!--
+  게임 타일: li 하나가 게임 하나. data-genre 는 타일 아래 작은 글자, style 의 --g 는 타일 색.
+  마인크래프트는 button: 누르면 잠깐 블록 모드가 됨 (assets/js/block-mode.js)
+-->
+<ul class="game-list">
+  <li style="--g: #c8aa6e" data-genre="MOBA">리그 오브 레전드</li>
+  <li style="--g: #ff4655" data-genre="전술 FPS">발로란트</li>
+  <li style="--g: #de9b35" data-genre="전술 FPS">CS2</li>
+  <li style="--g: #6fbf3f" data-genre="샌드박스"><button type="button" class="block-egg" title="눌러 보세요">마인크래프트</button></li>
+  <li style="--g: #a78bfa" data-genre="배틀로얄">이터널 리턴</li>
+</ul>
