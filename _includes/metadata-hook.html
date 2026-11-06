@@ -8,6 +8,37 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
 
 <!--
+  anime.js 등장 연출 (assets/js/intro.js). 아래 인라인 스크립트는 화면을 그리기 전에 어떤 연출을 할지 정해서
+  연출할 요소를 미리 숨김(깜빡임 방지):
+  - intro-sidebar: 이 창(탭)에서 처음 보는 페이지일 때 사이드바 트리
+  - intro-home: 사이트 밖에서 들어왔을 때 홈 배너 타이핑과 글 카드
+  스크립트를 못 불러와도 3초 뒤에는 숨김을 풀어서 내용이 그대로 보임
+-->
+<script>
+  (function () {
+    var root = document.documentElement;
+    var fromSite = false;
+    try {
+      fromSite = !!document.referrer && new URL(document.referrer).origin === location.origin;
+    } catch (e) {}
+    try {
+      if (!sessionStorage.getItem('sb-intro')) {
+        sessionStorage.setItem('sb-intro', '1');
+        root.classList.add('intro-sidebar');
+      }
+    } catch (e) {}
+    if (!fromSite) {
+      root.classList.add('intro-home');
+    }
+    setTimeout(function () {
+      root.classList.remove('intro-sidebar', 'intro-home');
+    }, 3000);
+  })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" defer></script>
+<script src="{{ '/assets/js/intro.js' | relative_url }}" defer></script>
+
+<!--
   페이지 전환: 글 페이지의 제목·썸네일 이름 (전환 규칙은 assets/css/jekyll-theme-chirpy.scss).
   홈 카드(_layouts/home.html)·카테고리 목록(_layouts/category-tab.html)과 같은 이름이라 그 자리에서 이어지듯 움직임
 -->

@@ -104,9 +104,14 @@ published: true
 - `_data/locales/ko-KR.yml`: 메뉴 이름(카테고리 7개, 소개)
 - `_includes/sidebar.html`: 사이드바 메뉴를 `tree` 명령 출력처럼 표시(`~ 홈` 아래 카테고리 가지와 소분류 가지(▸ 버튼으로 접기, 페이지마다 지금 보는 곳만 펼친 상태로 시작), 카테고리별 글 수·색 점, 글 없는 카테고리는 흐리게, 읽는 글의 카테고리는 초록), `hidden: true`인 탭은 메뉴에서 숨김
 - `_includes/trending-tags.html`: 빈 파일로 덮어써서 오른쪽 패널의 인기 태그를 숨김
-- `_layouts/home.html`: 홈 맨 위 소개 배너(`_includes/home-banner.html`에서 문구 수정, 배경은 마우스에 반응하는 hexdump canvas), 카테고리 색 배지
+- `_layouts/home.html`: 홈 맨 위 소개 배너(`_includes/home-banner.html`에서 문구 수정), 카테고리 색 배지
 - 페이지 전환(View Transitions): 홈 카드·카테고리 목록의 썸네일·제목이 글 페이지로 이어지듯 움직이고 사이드바는 제자리 (`assets/css/jekyll-theme-chirpy.scss`의 "페이지 전환", 글 쪽 이름은 `_includes/metadata-hook.html`)
   - 움직임 효과는 OS의 "동작 줄이기"(Windows: 설정 → 접근성 → 시각 효과 → 애니메이션 효과 끔)가 켜져 있으면 꺼짐
+- anime.js 4.5.0 등장 연출 (`assets/js/intro.js`, 불러오기와 연출 여부 판단은 `_includes/metadata-hook.html`)
+  - 사이드바 트리: 창(탭)에서 처음 보는 페이지에서 한 번, 가지 선이 그려지며 차례로 나타남
+  - 홈 배너: 사이트 밖에서 들어오면 명령이 한 글자씩 입력됨, 배너를 누르면 다시 재생
+  - 홈 글 카드: 사이트 밖에서 들어오면 화면에 보이는 카드부터 차례로 나타남
+  - 동작 줄이기 설정이면 위치는 움직이지 않고 나타나기와 타이핑만 함
 - `_tabs/tags.md`: 메뉴에서 숨김 (태그 페이지 상단 경로가 `/tags/`를 링크하므로 페이지는 유지)
 - `_tabs/archives.md` 삭제, `_data/contact.yml`에서 RSS 버튼 제거
 - `_layouts/category-tab.html`: 카테고리 메뉴 페이지(소개 + 글 목록)
