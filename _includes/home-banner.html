@@ -1,7 +1,12 @@
-<!-- 홈 첫 페이지 맨 위 소개 배너 (_layouts/home.html). 문구는 아래 .out 줄을 고치면 됩니다. -->
+<!--
+  홈 첫 페이지 맨 위 소개 배너 (_layouts/home.html). 문구는 아래 .out 줄을 고치면 됩니다.
+  배경 canvas: 흐린 hexdump가 깔리고 마우스 주변 바이트가 밝아지며 값이 바뀜.
+  마우스를 움직이는 동안만 그리고, 멈추면 1.2초 뒤 서서히 꺼짐. 터치 기기·동작 줄이기 설정에서는 꺼짐.
+-->
 <section class="home-banner" aria-label="소개">
   <div class="term-bar" aria-hidden="true"><span></span><span></span><span></span></div>
   <div class="term-body">
+    <canvas class="hex-canvas" aria-hidden="true"></canvas>
     <p><span class="user">darve1@log</span>:<span class="path">~</span>$ <span class="cmd">whoami</span></p>
     <p class="out">이동하 · 충남대 컴퓨터융합학부</p>
     <p><span class="user">darve1@log</span>:<span class="path">~</span>$ <span class="cmd">cat interests.txt</span></p>
@@ -11,3 +16,116 @@
     </p>
   </div>
 </section>
+
+<script>
+  (function () {
+    var canvas = document.querySelector('.home-banner .hex-canvas');
+    var finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!canvas || !finePointer || reduceMotion) {
+      return;
+    }
+
+    var banner = canvas.closest('.home-banner');
+    var ctx = canvas.getContext('2d');
+    var FONT = '12px "JetBrains Mono", Consolas, monospace';
+    var ROW_H = 17;
+    var RADIUS = 130;
+    var BASE = 0.07;
+    var PEAK = 0.33;
+    var cols = 0;
+    var rows = 0;
+    var cellW = 0;
+    var bytes = new Uint8Array(0);
+    var px = -9999;
+    var py = -9999;
+    var inside = false;
+    var lastMove = 0;
+    var energy = 0;
+    var running = false;
+
+    function hex(b) {
+      return (b < 16 ? '0' : '') + b.toString(16);
+    }
+
+    function resize() {
+      var w = canvas.clientWidth;
+      var h = canvas.clientHeight;
+      var dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.font = FONT;
+      ctx.textBaseline = 'top';
+      cellW = ctx.measureText('00').width + 7;
+      cols = Math.ceil(w / cellW);
+      rows = Math.ceil(h / ROW_H);
+      var next = new Uint8Array(cols * rows);
+      for (var i = 0; i < next.length; i++) {
+        next[i] = i < bytes.length ? bytes[i] : (Math.random() * 256) | 0;
+      }
+      bytes = next;
+      draw();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          var x = c * cellW + 4;
+          var y = r * ROW_H + 4;
+          var dx = x + cellW / 2 - px;
+          var dy = y + ROW_H / 2 - py;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          var k = d < RADIUS ? Math.pow(1 - d / RADIUS, 2) * energy : 0;
+          var i = r * cols + c;
+          if (k > 0.25 && Math.random() < 0.06) {
+            bytes[i] = (Math.random() * 256) | 0;
+          }
+          ctx.fillStyle = 'rgba(63, 185, 80, ' + (BASE + PEAK * k).toFixed(3) + ')';
+          ctx.fillText(hex(bytes[i]), x, y);
+        }
+      }
+    }
+
+    function frame() {
+      var active = inside && performance.now() - lastMove < 1200;
+      energy += ((active ? 1 : 0) - energy) * 0.12;
+      draw();
+      if (active || energy > 0.01) {
+        requestAnimationFrame(frame);
+      } else {
+        energy = 0;
+        running = false;
+        draw();
+      }
+    }
+
+    function wake() {
+      if (!running) {
+        running = true;
+        requestAnimationFrame(frame);
+      }
+    }
+
+    banner.addEventListener('pointermove', function (e) {
+      var rect = canvas.getBoundingClientRect();
+      px = e.clientX - rect.left;
+      py = e.clientY - rect.top;
+      inside = true;
+      lastMove = performance.now();
+      wake();
+    });
+
+    banner.addEventListener('pointerleave', function () {
+      inside = false;
+      wake();
+    });
+
+    canvas.classList.add('is-on');
+    new ResizeObserver(resize).observe(canvas);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(resize);
+    }
+  })();
+</script>
