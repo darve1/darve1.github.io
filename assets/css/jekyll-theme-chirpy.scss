@@ -561,12 +561,29 @@ h6,
   }
 
   .term-body {
+    position: relative;
     padding: 1rem 1.25rem;
     font-size: 0.9rem;
     line-height: 1.7;
 
     p {
+      position: relative;
+      z-index: 1;
       margin: 0;
+    }
+
+    /* 마우스에 반응하는 hexdump 배경 (스크립트가 켤 수 있는 환경에서만 보임) */
+    .hex-canvas {
+      position: absolute;
+      inset: 0;
+      display: none;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+
+      &.is-on {
+        display: block;
+      }
     }
 
     .out {
@@ -598,7 +615,62 @@ h6,
   }
 }
 
+/*
+  ---------- 페이지 전환 (View Transitions API, Chrome·Edge·Safari 18.2+, 지원 안 하면 그냥 이동) ----------
+  이 규칙은 처음 그리기 전에 읽혀야 해서 <head> 끝의 인라인 스타일이 아니라 여기(먼저 받는 CSS)에 둠.
+  - 사이드바·상단 바는 제자리, 본문만 바뀜
+  - 홈 카드·카테고리 목록의 썸네일·제목(vt-img-/vt-title-<글 주소>)이 글 페이지의 같은 이름으로 이어짐
+    (글 페이지 쪽 이름은 _includes/metadata-hook.html)
+*/
+@view-transition {
+  navigation: auto;
+}
+
+#sidebar {
+  view-transition-name: sidebar;
+}
+
+#topbar-wrapper {
+  view-transition-name: topbar;
+}
+
+::view-transition-group(*) {
+  animation-duration: 0.32s;
+  animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.16s ease-in both;
+}
+
+::view-transition-new(root) {
+  animation: vt-rise-in 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+::view-transition-old(*.vt-thumb),
+::view-transition-new(*.vt-thumb) {
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+
   #sidebar .sb-toggle i {
     transition: none;
   }

@@ -6,3 +6,20 @@
 >
 <!-- 터미널 테마 고정폭 글꼴 JetBrains Mono (한글은 Pretendard로 대체) -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<!--
+  페이지 전환: 글 페이지의 제목·썸네일 이름 (전환 규칙은 assets/css/jekyll-theme-chirpy.scss).
+  홈 카드(_layouts/home.html)·카테고리 목록(_layouts/category-tab.html)과 같은 이름이라 그 자리에서 이어지듯 움직임
+-->
+{% if page.layout == 'post' %}
+  <style>
+    article header h1 {
+      view-transition-name: vt-title-{{ page.url | slugify }};
+    }
+
+    article header .preview-img {
+      view-transition-name: vt-img-{{ page.url | slugify }};
+      view-transition-class: vt-thumb;
+    }
+  </style>
+{% endif %}
