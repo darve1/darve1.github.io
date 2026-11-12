@@ -131,14 +131,17 @@ ret
 
 ### leave
 
-`leave`는 다음 두 명령을 합친 것입니다.
+`leave`는 `mov rsp, rbp`와 `pop rbp` 두 명령을 합친 것입니다. 순서대로 살펴보겠습니다.
 
-1. `mov rsp, rbp`: `rsp`를 `rbp`의 위치로 옮깁니다. 지역 변수 공간이 정리됩니다.
-2. `pop rbp`: 스택에서 SFP를 꺼내 `rbp`에 넣습니다. `rbp`가 `main`의 기준점으로 돌아갑니다.
+먼저 `mov rsp, rbp`로 `rsp`를 `rbp`의 위치로 옮깁니다. 지역 변수 공간이 정리됩니다.
 
-![leave 실행 과정](assets/posts/2026-11-12-function-prologue-epilogue/step-leave.png)
+![mov rsp, rbp 실행 전후의 스택](assets/posts/2026-11-12-function-prologue-epilogue/step-leave-mov.png)
 
 정리된 공간의 값이 지워지는 것은 아닙니다. `rsp`가 내려가서 더 이상 쓰지 않는 공간이 되었을 뿐입니다.
+
+다음으로 `pop rbp`로 스택에서 SFP를 꺼내 `rbp`에 넣습니다. `rbp`가 `main`의 기준점으로 돌아가고, 값을 하나 꺼냈기 때문에 `rsp`는 8 늘어납니다.
+
+![pop rbp 실행 전후의 스택](assets/posts/2026-11-12-function-prologue-epilogue/step-leave-pop.png)
 
 ### ret
 
