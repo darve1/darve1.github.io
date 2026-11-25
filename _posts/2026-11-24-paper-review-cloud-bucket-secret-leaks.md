@@ -16,6 +16,10 @@ IEEE S&P 2025에 실린 논문 "The File That Contained the Keys Has Been Remove
 > 2025 IEEE Symposium on Security and Privacy, pp. 3180-3198, [DOI 10.1109/SP61157.2025.00009](https://doi.org/10.1109/SP61157.2025.00009)
 > 원문은 [TU Delft 저장소](https://repository.tudelft.nl/record/uuid:c54c9272-7220-448c-a7b8-f82124fea579)에서 볼 수 있습니다.
 
+## 논문을 고른 이유
+
+클라우드 쪽 보안 논문 중에서 제가 읽고 이해할 수 있을 만한 논문을 찾았습니다. 이 논문은 버킷을 공개로 잘못 설정하고 그 안에 키를 올려 두는, 기초적이지만 실제로 자주 일어나는 문제를 다루고 있어서 골랐습니다.
+
 ## 읽기 전에 정리한 것
 
 최근에는 애플리케이션을 저장하고 배포할 때 클라우드 서비스를 사용하는 경우가 많아졌습니다. 그만큼 클라우드 보안도 중요한 문제가 되고 있습니다.
