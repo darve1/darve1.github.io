@@ -79,3 +79,24 @@
     }
   </style>
 {% endif %}
+
+<!--
+  PWA 자동 업데이트: 배포로 새 서비스 워커가 대기 중이면 업데이트 버튼을 누르지 않아도 바로 적용함.
+  적용되면 테마(app.min.js)가 controllerchange 때 페이지를 한 번 새로고침해서 새 글이 보임
+-->
+{% if site.pwa.enabled %}
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistration().then(function (reg) {
+        if (!reg) return;
+        function skipWaiting() {
+          if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage('SKIP_WAITING');
+        }
+        skipWaiting();
+        reg.addEventListener('updatefound', function () {
+          if (reg.installing) reg.installing.addEventListener('statechange', skipWaiting);
+        });
+      });
+    }
+  </script>
+{% endif %}
