@@ -133,7 +133,7 @@ AWS는 2023년 4월부터 새로 만드는 버킷의 공개 접근을 기본으�
 이어서 읽어 보고 싶은 논문은 다음과 같습니다.
 
 1. Meli 외, "How Bad Can It Git? Characterizing Secret Leakage in Public GitHub Repositories" (NDSS 2019) - 공개 GitHub 저장소에서 키가 노출되는 규모를 측정한 연구입니다. 이 논문이 한 일을 GitHub에서 한 것이라서 비교해 보고 싶습니다.
-2. Li 외, "You've Got Vulnerability: Exploring Effective Vulnerability Notifications" (USENIX Security 2016): 취약점을 어떻게 알려줘야 실제로 고치는지 실험한 연구입니다. 이 논문이 보안 대응 조직과 함께 신고한 근거로 든 연구 중 하나입니다.
+2. Li 외, "You've Got Vulnerability: Exploring Effective Vulnerability Notifications" (USENIX Security 2016) - 취약점을 어떻게 알려줘야 실제로 고치는지 실험한 연구입니다. 이 논문이 보안 대응 조직과 함께 신고한 근거로 든 연구 중 하나입니다.
 
 ### 다른 분야에 적용해 볼 가능성
 
