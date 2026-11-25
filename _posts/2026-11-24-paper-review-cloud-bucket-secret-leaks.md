@@ -1,7 +1,7 @@
 ---
 title: "[논문 리뷰] 공개된 클라우드 버킷 속 비밀 정보 유출 (IEEE S&P 2025)"
 description: "공개로 잘못 설정된 클라우드 버킷에서 실제로 쓸 수 있는 키를 찾아 주인에게 신고하고, 그 뒤 어떻게 고쳤는지 추적한 IEEE S&P 2025 논문을 읽고 정리했습니다"
-categories: ["공부", "논문 리뷰"]
+categories: ["논문/컨퍼런스", "논문 리뷰"]
 tags: [paper-review, cloud-security, aws, s3, secret-leak]
 published: true
 ---
