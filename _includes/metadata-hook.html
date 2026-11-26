@@ -127,12 +127,16 @@
 <!--
   PWA 자동 업데이트: 배포로 새 서비스 워커가 대기 중이면 업데이트 버튼을 누르지 않아도 바로 적용함.
   적용되면 테마(app.min.js)가 controllerchange 때 페이지를 한 번 새로고침해서 새 글이 보임
+
+  새 판을 알아채는 시점: 페이지를 열 때마다 서비스 워커를 updateViaCache: 'none' 으로 다시 등록해서 바로 확인함.
+  테마는 기본값(imports)으로 등록하는데, 그러면 배포마다 바뀌는 설정 파일(assets/js/data/swconf.js)을
+  브라우저 캐시(GitHub Pages 는 10분)에서 읽어서, 배포 뒤 최대 10분 동안은 새로고침해도 이전 판이 그대로 보였음
+  (_config.yml 에서 pwa.cache.enabled 를 끄면 테마가 서비스 워커를 지우므로, 그때는 여기서도 등록하지 않음)
 -->
-{% if site.pwa.enabled %}
+{% if site.pwa.enabled and site.pwa.cache.enabled %}
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistration().then(function (reg) {
-        if (!reg) return;
+      navigator.serviceWorker.register('{{ "/sw.min.js" | relative_url }}', { updateViaCache: 'none' }).then(function (reg) {
         function skipWaiting() {
           if (reg.waiting && navigator.serviceWorker.controller) reg.waiting.postMessage('SKIP_WAITING');
         }
