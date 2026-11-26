@@ -13,6 +13,8 @@
   var KEY = 'block-mode';
   var FONT_ID = 'galmuri-css';
   var FONT_HREF = 'https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css';
+  /* 무결성 해시: 버전을 올리면 다시 계산 (_includes/metadata-hook.html 맨 위 설명) */
+  var FONT_SRI = 'sha384-55uQGdclWjXwWY0yHikdtcfcat9pPBqMBCVFIeWjRhvPPUYbpJLhIJegzTcFoh/A';
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   var ui = null;
 
@@ -39,6 +41,9 @@
       var link = document.createElement('link');
       link.id = FONT_ID;
       link.rel = 'stylesheet';
+      link.integrity = FONT_SRI;
+      link.crossOrigin = 'anonymous';
+      link.referrerPolicy = 'no-referrer';
       link.href = FONT_HREF;
       document.head.appendChild(link);
     }

@@ -1,0 +1,25 @@
+---
+layout: page
+# Chirpy v7.6.0 의 _layouts/tag.html 을 덮어씀 (/tags/<이름>/, 홈 오른쪽 칸의 태그가 여기로 옴).
+# 점선 목록 대신 카테고리 화면과 같은 머리 + 홈과 같은 글 칸 (_includes/post-row.html)
+---
+
+{% include lang.html %}
+
+<div class="cat-page">
+  <header class="cat-head">
+    <p class="cat-crumb"><a href="{{ '/tags/' | relative_url }}">태그</a></p>
+    <div class="cat-title-row">
+      <h1 class="dynamic-title cat-title tag-title">{{ page.title }}</h1>
+      <span class="cat-count">글 {{ page.posts | size }}개</span>
+    </div>
+  </header>
+
+  <div id="post-list">
+    <div class="stack">
+      {% for post in page.posts %}
+        {% include post-row.html post=post %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

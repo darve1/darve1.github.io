@@ -97,8 +97,8 @@
     banner.addEventListener('click', playBanner);
   }
 
-  /* 3. 홈 글 카드 */
-  var cards = Array.prototype.slice.call(document.querySelectorAll('#post-list .card-wrapper'));
+  /* 3. 홈 글 목록의 줄 */
+  var cards = Array.prototype.slice.call(document.querySelectorAll('#post-list .post-row'));
   if (root.classList.contains('intro-home') && cards.length > 0 && 'IntersectionObserver' in window) {
     a.utils.set(cards, { opacity: 0 });
     var first = true;

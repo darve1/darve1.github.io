@@ -13,7 +13,10 @@
 #   [글](_posts/2026-01-01-slug.md#제목)   → /posts/slug/#제목 (발행 전 글이면 링크 없이 글자만)
 #   [제목](#제목)                          → 같은 글의 제목으로 이동
 #   [파일](assets/posts/글/a.zip)          → /assets/posts/글/a.zip
-#   > [!tip] 제목                          → Chirpy 강조 박스 (prompt-tip)
+#   > [!tip] 제목                          → 강조 박스 (prompt-tip). 박스 위 꼬리표는 적은 종류 이름 그대로 (tip)
+#   > [!example]- 제목                     → 접어 둔 강조 박스 (누르면 펼쳐짐). [!example]+ 는 펼쳐 둔 채로
+#   ```c addr.c                            → 코드 블록 머리에 파일 이름 (```c title="addr.c" 도 같음)
+#   ==강조==                               → 형광펜 (<mark>)
 
 require "cgi/escape"
 
@@ -22,12 +25,21 @@ module ObsidianContent
   VIDEO = %w[mp4 webm mov m4v ogv].freeze
   AUDIO = %w[mp3 wav ogg oga m4a flac aac opus].freeze
 
-  # Obsidian 콜아웃 종류 → Chirpy 강조 박스 (목록에 없으면 info)
+  # Obsidian 콜아웃 종류 → 강조 박스 색 (목록에 없으면 info). 색은 assets/css/jekyll-theme-chirpy.scss 의 "강조 박스"
   PROMPTS = {
     "tip" => %w[tip hint success check done important],
     "warning" => %w[warning caution attention question help faq],
-    "danger" => %w[danger error failure fail missing bug]
+    "danger" => %w[danger error failure fail missing bug],
+    "summary" => %w[summary abstract tldr],
+    "example" => %w[example],
+    "quote" => %w[quote cite]
   }.freeze
+
+  # ```c addr.c / ```c title="addr.c" — 언어 뒤에 적은 파일 이름
+  FENCE_TITLE = /\A( {0,3}(?:`{3,}|~{3,}))[ \t]*([\w+#.-]+)[ \t]+(?:title=)?["']?([^"'\n]+?)["']?[ \t]*\r?\n?\z/
+
+  # ==강조== (양 끝에 공백 없이. 제목 밑줄 ===== 은 제외)
+  MARK = /==(?=[^\s=])(.+?)(?<=[^\s=])==/
 
   YOUTUBE = %r{\Ahttps?://(?:www\.|m\.)?(?:youtube\.com/(?:watch\?(?:[^#]*&)?v=|shorts/|embed/|live/)|youtu\.be/)([\w-]{11})}
 
@@ -43,25 +55,41 @@ module ObsidianContent
       %w[.md .markdown].include?(ext.to_s.downcase)
     end
 
-    # 변환 전: 코드 블록 밖의 ![설명|300](주소) → ![설명](주소){: width="300" }
+    # 변환 전에 고치는 것 (kramdown 이 모르는 Obsidian 문법)
+    # - 코드 블록 밖의 ![설명|300](주소) → ![설명](주소){: width="300" }
+    # - 코드 블록 밖, `코드` 밖의 ==강조== → <mark>강조</mark>
+    # - ```c addr.c → ```c 로 고치고 블록 바로 뒤에 {: file="addr.c" } (Chirpy 가 코드 블록 머리에 파일 이름을 띄움)
     def prepare(markdown)
       fence = nil
+      file = nil
       markdown.lines.map do |line|
         if (m = line.match(/\A {0,3}(`{3,}|~{3,})/))
           if fence.nil?
             fence = m[1][0]
+            if (t = line.match(FENCE_TITLE))
+              file = t[3]
+              next "#{t[1]}#{t[2]}\n"
+            end
             next line
           elsif m[1][0] == fence
             fence = nil
-            next line
+            next line unless file
+
+            ial = %({: file="#{file.gsub('"', "&quot;")}" }\n)
+            file = nil
+            next "#{line.chomp}\n#{ial}"
           end
         end
         next line if fence
 
-        line.gsub(SIZED_IMAGE) do
+        line = line.gsub(SIZED_IMAGE) do
           alt, width, height, url = Regexp.last_match.captures
           %(![#{alt}](#{url}){: width="#{width}"#{%( height="#{height}") if height} })
         end
+        next line unless line.include?("==")
+
+        # `코드` 조각은 그대로 두고 그 사이 글자만 고침
+        line.split(/(`+[^`\n]*`+)/).map { |part| part.start_with?("`") ? part : part.gsub(MARK, '<mark>\1</mark>') }.join
       end.join
     end
 
@@ -76,12 +104,23 @@ module ObsidianContent
     private
 
     def callouts(html)
-      html.gsub(%r{<blockquote>(\s*)<p>\[!([\w-]+)\][+-]?[ \t]*(.*?)(\n|</p>)}m) do
-        space, type, title, ending = Regexp.last_match.captures
-        kind = PROMPTS.find { |_, types| types.include?(type.downcase) }&.first || "info"
-        head = title.empty? ? "" : %(<p class="callout-title"><strong>#{title}</strong></p>)
-        %(<blockquote class="prompt-#{kind}">#{space}#{head}#{ending == "\n" ? "<p>" : ""})
+      html = html.gsub(%r{<blockquote>(\s*)<p>\[!([\w-]+)\]([+-]?)[ \t]*(.*?)(\n|</p>)}m) do
+        space, type, fold, title, ending = Regexp.last_match.captures
+        type = type.downcase
+        kind = PROMPTS.find { |_, types| types.include?(type) }&.first || "info"
+        rest = ending == "\n" ? "<p>" : ""
+        if fold.empty?
+          head = title.empty? ? "" : %(<p class="callout-title"><strong>#{title}</strong></p>)
+          next %(<blockquote class="prompt-#{kind}" data-callout="#{type}">#{space}#{head}#{rest})
+        end
+
+        summary = title.empty? ? type : title
+        %(<blockquote class="prompt-#{kind} callout-fold" data-callout="#{type}">#{space}) +
+          %(<details#{" open" if fold == "+"}><summary>#{summary}</summary>#{rest})
       end
+
+      # shortcut: 접는 박스는 처음 만나는 </blockquote> 에서 닫음. 접는 박스 안에 인용문(>)을 또 넣게 되면 짝을 세도록 고칠 것
+      html.gsub(%r{(<blockquote class="prompt-\w+ callout-fold".*?)</blockquote>}m) { "#{Regexp.last_match(1)}</details></blockquote>" }
     end
 
     def embed(tag, baseurl)

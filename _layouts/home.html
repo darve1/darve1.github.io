@@ -5,7 +5,13 @@ layout: default
 <!--
   Chirpy v7.6.0 의 _layouts/home.html 을 덮어씀
   - 첫 페이지 맨 위에 소개 배너 (_includes/home-banner.html)
-  - 글 카드의 카테고리를 색 배지로 표시 (대분류 = 배지, 소분류 = 옆에 글자)
+  - 글 목록은 글 하나가 한 칸이고, 칸들이 서로 붙어서 한 덩어리로 쌓임 (새 글이 맨 위)
+    (모양은 assets/css/jekyll-theme-chirpy.scss 의 "홈 글 목록")
+  - 카테고리는 색 배지로 표시 (대분류 = 배지, 소분류 = 옆에 글자), 칸 왼쪽 띠도 같은 색 (article 의 data-category)
+  - 글 한 칸의 마크업은 _includes/post-row.html
+  - 오른쪽 칸에 달력·태그 (_includes/home-side.html). 달력은 글을 쓴 날을 GitHub 잔디처럼 초록으로 칠하고,
+    날짜나 태그를 누르면 목록이 거기에 해당하는 글만으로 바뀜 (주소 뒤에 #2026-11-24, #tag:pwnable 이 붙어서
+    뒤로 가기로 되돌아옴)
   - 썸네일·제목에 view-transition-name: 글 페이지로 넘어갈 때 그 자리로 이어지듯 움직임 (_includes/metadata-hook.html)
 -->
 
@@ -53,100 +59,55 @@ layout: default
   {% endfor %}
 {% endif %}
 
+<!-- 왼쪽: 배너 + 글 목록 + 쪽 번호, 오른쪽: 달력·태그 (_includes/home-side.html). 좁은 화면에서는 오른쪽 칸이 목록 아래로 내려감 -->
+<div class="home-grid">
+<div class="home-main">
 <div id="post-list" class="flex-grow-1 px-xl-1">
   {% if paginator.page == 1 %}
     {% include home-banner.html %}
   {% endif %}
 
-  {% for post in posts %}
-    <article class="card-wrapper card">
-      <a href="{{ post.url | relative_url }}" class="post-preview row g-0 flex-md-row-reverse">
-        {% assign card_body_col = '12' %}
+  <!-- 오른쪽 칸에서 날짜나 태그를 골랐을 때만 보이는 것: 안내 줄 + 해당하는 글 (assets/js/post-filter.js 가 채우고 보였다 숨김) -->
+  <div class="day-filter" hidden>
+    <p class="day-filter-label" aria-live="polite"></p>
+    <a href="#post-list">전체 글 보기</a>
+  </div>
+  <div class="stack day-stack" hidden></div>
 
-        {% if post.image %}
-          {% assign src = post.image.path | default: post.image %}
-
-          {% if post.media_subpath %}
-            {% unless src contains '://' %}
-              {% assign src = post.media_subpath
-                | append: '/'
-                | append: src
-                | replace: '///', '/'
-                | replace: '//', '/'
-              %}
-            {% endunless %}
-          {% endif %}
-
-          {% if post.image.lqip %}
-            {% assign lqip = post.image.lqip %}
-
-            {% if post.media_subpath %}
-              {% unless lqip contains 'data:' %}
-                {% assign lqip = post.media_subpath
-                  | append: '/'
-                  | append: lqip
-                  | replace: '///', '/'
-                  | replace: '//', '/'
-                %}
-              {% endunless %}
-            {% endif %}
-
-            {% assign lqip_attr = 'lqip="' | append: lqip | append: '"' %}
-          {% endif %}
-
-          {% assign alt = post.image.alt | xml_escape | default: 'Preview Image' %}
-
-          <div class="col-md-5">
-            <img src="{{ src }}" alt="{{ alt }}" {{ lqip_attr }} style="view-transition-name: vt-img-{{ post.url | slugify }}; view-transition-class: vt-thumb">
-          </div>
-
-          {% assign card_body_col = '7' %}
-        {% endif %}
-
-        <div class="col-md-{{ card_body_col }}">
-          <div class="card-body d-flex flex-column">
-            <h1 class="card-title my-2 mt-md-0" style="view-transition-name: vt-title-{{ post.url | slugify }}">
-              {{- post.title -}}
-            </h1>
-
-            <div class="card-text content mt-0 mb-3">
-              <p>{% include post-summary.html %}</p>
-            </div>
-
-            <div class="post-meta flex-grow-1 d-flex align-items-end">
-              <div class="me-auto">
-                <!-- posted date -->
-                <i class="far fa-calendar fa-fw me-1"></i>
-                {% include datetime.html date=post.date lang=lang %}
-
-                <!-- categories -->
-                {% if post.categories.size > 0 %}
-                  <span class="categories ms-2">
-                    <span class="cat-badge" data-category="{{ post.categories[0] }}">{{ post.categories[0] }}</span>
-                    {%- if post.categories.size > 1 -%}
-                      <span class="cat-sub">/ {{ post.categories[1] }}</span>
-                    {%- endif -%}
-                  </span>
-                {% endif %}
-              </div>
-
-              {% if post.pin %}
-                <div class="pin ms-1">
-                  <i class="fas fa-thumbtack fa-fw"></i>
-                  <span>{{ site.data.locales[lang].post.pin_prompt }}</span>
-                </div>
-              {% endif %}
-            </div>
-            <!-- .post-meta -->
-          </div>
-          <!-- .card-body -->
-        </div>
-      </a>
-    </article>
-  {% endfor %}
+  <!-- 평소에 보이는 목록 (이 쪽의 글) -->
+  <div class="stack all-stack">
+    {% for post in posts %}
+      {% assign eager = false %}
+      {% if forloop.index <= 4 %}
+        {% assign eager = true %}
+      {% endif %}
+      {% include post-row.html post=post eager=eager %}
+    {% endfor %}
+  </div>
 </div>
 <!-- #post-list -->
 
 {% if paginator.total_pages > 1 %}
-  {% include post-paginator.html %}
+  <div class="home-pager">{% include post-paginator.html %}</div>
 {% endif %}
+</div>
+<!-- .home-main -->
+
+{% include home-side.html %}
+</div>
+<!-- .home-grid -->
+
+<!--
+  전체 글의 칸 묶음 (화면에는 안 그려짐. 홈에서 숨긴 글(hidden)은 뺌). assets/js/post-filter.js 가 여기서
+  - 글 쓴 날을 읽어 달력에 칠하고
+  - 달력에서 날짜를, 태그 목록에서 태그를 고르면 해당하는 칸을 복사해 목록 자리에 넣음
+    (다른 쪽에 있는 글도 나오게 하려고 전체를 넣어 둠)
+  shortcut: 글마다 칸 하나(약 1KB)가 홈 HTML 에 한 번 더 들어감. 글이 수백 개가 되면 날짜별 쪽을 따로 만드는 쪽으로 바꿀 것
+-->
+{% assign day_posts = site.posts | where_exp: 'p', 'p.hidden != true' %}
+<template id="all-rows">
+  {% for post in day_posts %}
+    {% include post-row.html post=post %}
+  {% endfor %}
+</template>
+<script src="{{ '/assets/js/post-filter.js' | relative_url }}" defer></script>

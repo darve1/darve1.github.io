@@ -3,13 +3,48 @@
   - 본문·제목: SUIT Variable 2.0.5
   - 고정폭(코드·날짜·메뉴): D2Coding, 자주 쓰는 한글 2,350자 subset. 한글도 고정폭이라 코드 속 한글 칸이 맞음
     (저장소에 버전 태그가 없어서 커밋으로 고정)
+
+  무결성 검사(integrity): 이 파일에서 불러오는 CDN 파일은 모두 버전이 고정돼 있어서, 받은 내용이 아래 해시와 다르면
+  브라우저가 쓰지 않음 (CDN 이 바뀌거나 변조돼도 안전). 버전을 올릴 때는 해시도 다시 계산해야 함:
+    curl -s <주소> | openssl dgst -sha384 -binary | openssl base64 -A   → 앞에 sha384- 를 붙임
+  갈무리 글꼴 해시는 assets/js/block-mode.js 에도 같은 값이 있음
 -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css">
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2.0.5/fonts/variable/woff2/SUIT-Variable.css"
+  integrity="sha384-pHEDKB8KMOpnOqEjHZEW9SNi5EPKbCfvJgnPn+CNVZJFwvog5R8rd9K86GRnw4cw"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+>
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/gh/wan2land/d2coding@e2659bacb50fd3e5f81b1beededb73ffebda134d/d2coding-subset.css"
+  integrity="sha384-/aGOjRgXetckwYWTzGw1zfJJPlG4ZNUhc+ntpCY45ZqFXbKWXJQyg4WlSYt5Aghw"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
 >
+
+<!--
+  다음 페이지 미리 받기 (Speculation Rules, Chrome·Edge. 지원 안 하는 브라우저는 무시함):
+  사이트 안 링크에 마우스를 잠깐 올리거나 누르기 시작하면 그 페이지를 미리 받아 둬서 넘어갈 때 바로 뜸.
+  그림·첨부 파일(/assets/)은 제외. 미리 그려 두기(prerender)까지는 하지 않음: 등장 연출이 보이지 않는 곳에서 먼저 끝나 버림
+-->
+<script type="speculationrules">
+  {
+    "prefetch": [
+      {
+        "where": {
+          "and": [
+            { "href_matches": "/*" },
+            { "not": { "href_matches": "/assets/*" } }
+          ]
+        },
+        "eagerness": "moderate"
+      }
+    ]
+  }
+</script>
 
 <!--
   anime.js 등장 연출 (assets/js/intro.js). 아래 인라인 스크립트는 화면을 그리기 전에 어떤 연출을 할지 정해서
@@ -52,13 +87,22 @@
         var font = document.createElement('link');
         font.id = 'galmuri-css';
         font.rel = 'stylesheet';
+        font.integrity = 'sha384-55uQGdclWjXwWY0yHikdtcfcat9pPBqMBCVFIeWjRhvPPUYbpJLhIJegzTcFoh/A';
+        font.crossOrigin = 'anonymous';
+        font.referrerPolicy = 'no-referrer';
         font.href = 'https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css';
         document.head.appendChild(font);
       }
     } catch (e) {}
   })();
 </script>
-<script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" defer></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js"
+  integrity="sha384-InMmvD3VoYcY7hGjSC80aLb2bNNE4CzpX+Eq6FVDlmB0IKgDvmfPw4UY8L/M++iG"
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+  defer
+></script>
 <script src="{{ '/assets/js/intro.js' | relative_url }}" defer></script>
 <!-- 블록 모드 이스터에그 (소개 탭 마인크래프트 타일). 켜져 있으면 위 스크립트가 html.block-mode 와 갈무리 글꼴을 미리 붙이고, 새로고침이면 끔 -->
 <script src="{{ '/assets/js/block-mode.js' | relative_url }}" defer></script>

@@ -1,0 +1,54 @@
+<!--
+  홈 오른쪽 칸 (_layouts/home.html). 어두운 판 두 장: 달력, 태그. 판마다 머리 줄(제목 + 오른쪽 조작)과 본문.
+  모양은 assets/css/jekyll-theme-chirpy.scss 의 "홈 오른쪽 칸"
+  - 달력: 글을 쓴 날은 GitHub 잔디처럼 초록 칸(그날 글이 많을수록 진함)이고, 누르면 왼쪽 목록이 그날 올린 글만으로 바뀜.
+    아래에 그 달의 글 수와 색 범례 (표와 글 수는 assets/js/post-filter.js 가 채움)
+  - 태그: 글이 많은 태그 10개 (_includes/side-rows.html). 누르면 왼쪽 목록이 그 태그가 붙은 글만으로 바뀜.
+    이름 아래 가는 막대의 초록 길이 = 글 수 비율(가장 많은 태그가 100%)
+  제목 태그(h2)에 id 를 주면 테마가 옆에 # 링크를 붙이므로 id 없이 씀
+-->
+<aside class="home-side" aria-label="달력과 태그">
+  <section class="cal" aria-label="달력">
+    <div class="side-head">
+      <h2 class="panel-heading cal-label" aria-live="polite"></h2>
+      <div class="cal-navs">
+        <button type="button" class="cal-nav" data-step="-1" aria-label="이전 달">
+          <i class="fas fa-angle-left" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="cal-nav" data-step="1" aria-label="다음 달">
+          <i class="fas fa-angle-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <div class="side-body">
+      <!-- 달력 표는 post-filter.js 가 여기에 만듦 (HTML 에 table 을 직접 쓰면 테마가 본문 표 모양과 가로 스크롤을 입힘) -->
+      <div class="cal-slot"></div>
+      <div class="cal-foot">
+        <span class="cal-count"></span>
+        <span class="cal-legend" aria-hidden="true">
+          적음 <i></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i> 많음
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section aria-label="태그">
+    <div class="side-head">
+      <h2 class="panel-heading">태그</h2>
+      <a href="{{ '/tags/' | relative_url }}">전체 보기</a>
+    </div>
+
+    <!-- 글 수가 많은 순으로 정렬: "1003::pwnable" 처럼 글 수(+1000)를 앞에 붙여 글자 순으로 정렬한 뒤 뒤집음 -->
+    {% assign tag_keys = '' | split: '' %}
+    {% for tag in site.tags %}
+      {% assign count = tag[1] | size | plus: 1000 %}
+      {% capture tag_key %}{{ count }}::{{ tag[0] }}{% endcapture %}
+      {% assign tag_keys = tag_keys | push: tag_key %}
+    {% endfor %}
+    {% assign tag_keys = tag_keys | sort | reverse %}
+
+    <div class="side-body">
+      {% include side-rows.html keys=tag_keys mode='tag' limit=10 %}
+    </div>
+  </section>
+</aside>

@@ -1,0 +1,17 @@
+---
+layout: page
+# Chirpy v7.6.0 의 _layouts/category.html 을 덮어씀 (/categories/<이름>/, 사이드바의 소분류가 여기로 옴).
+# 점선 목록 대신 카테고리 탭 화면과 같은 구성 (_includes/cat-page.html):
+# - 소분류면: 그 소분류의 글 + 위에 대분류 링크와 소분류 탭
+# - 대분류면: 카테고리 탭 화면과 같은 목록 (소개 글은 탭 화면에만 있음)
+---
+
+{% include lang.html %}
+
+{% comment %} 이 카테고리가 소분류인지: 첫 글의 대분류가 이 이름과 다르면 소분류 {% endcomment %}
+{% assign top = page.posts.first.categories[0] | default: page.title %}
+{% if top == page.title %}
+  {% include cat-page.html top=top %}
+{% else %}
+  {% include cat-page.html top=top sub=page.title %}
+{% endif %}

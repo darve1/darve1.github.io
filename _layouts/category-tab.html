@@ -1,34 +1,14 @@
 ---
-layout: page
-# 사이드바 카테고리 탭 페이지: 탭 본문(소개) + page.category 에 속한 글 목록
+layout: default
+# 사이드바 카테고리 탭 화면 (/study/ 등): 대분류 page.category 의 글 목록.
+# 탭 파일(_tabs/*.md)의 본문은 소개 글로 쓰임 (강조 박스로 적혀 있어도 글자만 뽑아서 머리 아래에 보여 줌).
+# 본문 구성은 _includes/cat-page.html, 소분류 화면(_layouts/category.html)과 같이 씀
 ---
 
 {% include lang.html %}
 
-{% assign posts = site.categories[page.category] %}
+{% assign desc = content | strip_html | strip %}
 
-<div id="page-category" class="category-tab">
-  {{ content }}
-
-  <p class="text-muted small mb-1">
-    <i class="far fa-folder-open fa-fw"></i>
-    {{ posts | size }}
-    {{ site.data.locales[lang].categories.post_measure }}
-  </p>
-
-  {% if posts and posts.size > 0 %}
-    <ul class="content ps-0">
-      {% for post in posts %}
-        <li class="d-flex justify-content-between px-md-3">
-          <a href="{{ post.url | relative_url }}" style="view-transition-name: vt-title-{{ post.url | slugify }}">
-            {{- post.title -}}
-          </a>
-          <span class="dash flex-grow-1"></span>
-          {% include datetime.html date=post.date class='text-muted small text-nowrap' lang=lang %}
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p class="text-muted">아직 작성된 글이 없습니다.</p>
-  {% endif %}
-</div>
+<article class="px-1">
+  {% include cat-page.html top=page.category desc=desc %}
+</article>

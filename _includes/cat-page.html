@@ -1,0 +1,131 @@
+{% comment %}
+  카테고리 화면의 본문. 대분류 화면(_layouts/category-tab.html)과 소분류 화면(_layouts/category.html)이 같이 씀.
+  홈과 같은 틀: 왼쪽에 머리 + 글 목록, 오른쪽 칸에 소분류·태그 판 (좁은 화면에서는 판이 목록 아래로 내려감).
+  모양은 assets/css/jekyll-theme-chirpy.scss 의 "카테고리·태그 화면"과 "홈 오른쪽 칸"
+  - 머리: 카테고리 색 점 + 이름, 글 수, 소개 글 (소분류 화면이면 이름 위에 대분류로 가는 링크)
+  - 글 목록: 홈과 같은 칸 (_includes/post-row.html). 글이 없으면 안내 문구만
+  - 소분류 판: 전체 / 소분류들 (글 많은 순). 누르면 그 소분류 화면으로 이동. 소분류가 있는 카테고리만
+  - 태그 판: 지금 목록의 글에 붙은 태그 (글 많은 순 10개). 누르면 목록이 그 태그의 글만으로 바뀜 (assets/js/post-filter.js)
+  넘겨받는 값
+  - top: 대분류 이름 (예: 공부)
+  - sub: 지금 보는 소분류 이름 (대분류 화면이면 없음)
+  - desc: 소개 글 (없어도 됨)
+{% endcomment %}
+{% assign top = include.top %}
+{% assign sub = include.sub %}
+{% assign top_posts = site.categories[top] %}
+{% assign top_count = top_posts | size %}
+{% assign tab = site.tabs | where: 'category', top | first %}
+
+{% comment %} 대분류 화면 주소: 사이드바 탭이 있으면 그 주소, 없으면 테마가 만드는 /categories/<이름>/ {% endcomment %}
+{% if tab %}
+  {% assign top_url = tab.url | relative_url %}
+{% else %}
+  {% assign top_url = top | slugify | url_encode | prepend: '/categories/' | append: '/' | relative_url %}
+{% endif %}
+
+{% if sub %}
+  {% assign posts = top_posts | where_exp: 'p', 'p.categories[1] == sub' %}
+{% else %}
+  {% assign posts = top_posts %}
+{% endif %}
+{% assign count = posts | size %}
+
+{% comment %}
+  소분류: 이 대분류 글들의 두 번째 카테고리 (글 front matter categories: [대분류, 소분류]).
+  글 많은 순으로 정렬하려고 "1004::System Hacking" 처럼 글 수(+1000)를 앞에 붙여 글자 순으로 정렬한 뒤 뒤집음 (태그도 같은 방법)
+{% endcomment %}
+{% assign names = '' | split: '' %}
+{% for post in top_posts %}
+  {% if post.categories[1] %}
+    {% assign names = names | push: post.categories[1] %}
+  {% endif %}
+{% endfor %}
+{% assign names = names | uniq %}
+{% assign sub_keys = '' | split: '' %}
+{% for name in names %}
+  {% assign n = top_posts | where_exp: 'p', 'p.categories[1] == name' | size | plus: 1000 %}
+  {% capture key %}{{ n }}::{{ name }}{% endcapture %}
+  {% assign sub_keys = sub_keys | push: key %}
+{% endfor %}
+{% assign sub_keys = sub_keys | sort | reverse %}
+
+{% comment %} 태그: 지금 목록(posts)의 글에 붙은 것만 {% endcomment %}
+{% assign names = '' | split: '' %}
+{% for post in posts %}
+  {% for tag in post.tags %}
+    {% assign names = names | push: tag %}
+  {% endfor %}
+{% endfor %}
+{% assign names = names | uniq %}
+{% assign tag_keys = '' | split: '' %}
+{% for name in names %}
+  {% assign n = posts | where_exp: 'p', 'p.tags contains name' | size | plus: 1000 %}
+  {% capture key %}{{ n }}::{{ name }}{% endcapture %}
+  {% assign tag_keys = tag_keys | push: key %}
+{% endfor %}
+{% assign tag_keys = tag_keys | sort | reverse %}
+
+<div class="home-grid cat-page" data-category="{{ top }}">
+  <div class="home-main">
+    <header class="cat-head">
+      {% if sub %}
+        <p class="cat-crumb"><a href="{{ top_url }}">{{ top }}</a></p>
+      {% endif %}
+      <div class="cat-title-row">
+        <h1 class="dynamic-title cat-title">{{ sub | default: top }}</h1>
+        <span class="cat-count">글 {{ count }}개</span>
+      </div>
+      {% if include.desc and include.desc != '' %}
+        <p class="cat-desc">{{ include.desc }}</p>
+      {% endif %}
+    </header>
+
+    {% if count > 0 %}
+      <div id="post-list">
+        <!-- 오른쪽 칸에서 태그를 골랐을 때만 보이는 것: 안내 줄 + 해당하는 글 (post-filter.js 가 채우고 보였다 숨김) -->
+        <div class="day-filter" hidden>
+          <p class="day-filter-label" aria-live="polite"></p>
+          <a href="#post-list">전체 글 보기</a>
+        </div>
+        <div class="stack day-stack" hidden></div>
+
+        <div class="stack all-stack">
+          {% for post in posts %}
+            {% include post-row.html post=post %}
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <p class="cat-empty">아직 올린 글이 없음</p>
+    {% endif %}
+  </div>
+
+  {% if count > 0 %}
+    <aside class="home-side" aria-label="소분류와 태그">
+      {% if sub_keys.size > 0 %}
+        <section aria-label="소분류">
+          <div class="side-head">
+            <h2 class="panel-heading">소분류</h2>
+          </div>
+          <div class="side-body">
+            {% include side-rows.html keys=sub_keys mode='sub' current=sub all_url=top_url all_count=top_count %}
+          </div>
+        </section>
+      {% endif %}
+
+      {% if tag_keys.size > 0 %}
+        <section aria-label="태그">
+          <div class="side-head">
+            <h2 class="panel-heading">태그</h2>
+            <a href="{{ '/tags/' | relative_url }}">전체 보기</a>
+          </div>
+          <div class="side-body">
+            {% include side-rows.html keys=tag_keys mode='tag' limit=10 %}
+          </div>
+        </section>
+      {% endif %}
+    </aside>
+    <script src="{{ '/assets/js/post-filter.js' | relative_url }}" defer></script>
+  {% endif %}
+</div>

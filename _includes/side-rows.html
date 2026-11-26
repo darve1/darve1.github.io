@@ -1,0 +1,56 @@
+{% comment %}
+  오른쪽 칸 판 안의 목록 한 벌: 줄마다 이름 · 글 수 · 가는 막대(글 수 비율). 태그 판과 소분류 판이 같이 씀.
+  모양은 assets/css/jekyll-theme-chirpy.scss 의 "홈 오른쪽 칸" (.tag-list)
+  넘겨받는 값
+  - keys: "1004::이름" 꼴의 목록 (글 수 + 1000 을 앞에 붙인 것, 글 많은 순으로 정렬해서 넘김)
+  - mode: 'tag' 면 누를 때 왼쪽 목록이 그 태그의 글만으로 바뀜 (assets/js/post-filter.js, 스크립트가 없으면 태그 화면으로 이동),
+          'sub' 면 그 소분류 화면(/categories/<이름>/)으로 이동
+  - limit: 보여 줄 줄 수 (없으면 전부)
+  - current: 지금 보고 있는 소분류 이름 (mode 가 'sub' 일 때, 그 줄을 표시)
+  - all_url, all_count: mode 가 'sub' 일 때 맨 위에 두는 "전체" 줄의 주소와 글 수
+{% endcomment %}
+{% assign max_count = include.keys | first | split: '::' | first | minus: 1000 %}
+{% if include.all_count %}
+  {% assign max_count = include.all_count %}
+{% endif %}
+
+<ul class="tag-list">
+  {% if include.all_url %}
+    <li>
+      <a href="{{ include.all_url }}" style="--share: 100%" {% unless include.current %}aria-current="page"{% endunless %}>
+        <span class="tag-name">전체</span>
+        <span class="tag-count">{{ include.all_count }}</span>
+      </a>
+    </li>
+  {% endif %}
+
+  {% for key in include.keys limit: include.limit %}
+    {% assign parts = key | split: '::' %}
+    {% assign name = parts | last %}
+    {% assign count = parts | first | minus: 1000 %}
+    {% assign share = count | times: 100 | divided_by: max_count %}
+    <li>
+      {% if include.mode == 'sub' %}
+        <a
+          href="{{ name | slugify | url_encode | prepend: '/categories/' | append: '/' | relative_url }}"
+          style="--share: {{ share }}%"
+          {% if name == include.current %}aria-current="page"{% endif %}
+        >
+      {% else %}
+        {% comment %}
+          주소는 그 태그의 화면(/tags/<이름>/)으로 적어 둠: 스크립트가 꺼져 있어도 태그의 글을 볼 수 있고,
+          배포 때 도는 링크 검사(htmlproofer)도 통과함. 스크립트가 켜지면 post-filter.js 가 #tag:이름 으로 바꿔서
+          화면을 옮기지 않고 목록만 거름
+        {% endcomment %}
+        <a
+          href="{{ name | slugify | url_encode | prepend: '/tags/' | append: '/' | relative_url }}"
+          data-filter="tag:{{ name }}"
+          style="--share: {{ share }}%"
+        >
+      {% endif %}
+        <span class="tag-name">{{ name }}</span>
+        <span class="tag-count">{{ count }}</span>
+      </a>
+    </li>
+  {% endfor %}
+</ul>

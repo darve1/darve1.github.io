@@ -1,0 +1,70 @@
+{% comment %}
+  홈 글 목록의 한 칸 (_layouts/home.html). 두 군데에서 씀
+  - 쪽마다 보이는 목록
+  - 날짜나 태그를 골랐을 때 꺼내 쓰는 전체 글 묶음 (홈의 <template id="all-rows">)
+  - 카테고리·태그 화면의 목록
+  넘겨받는 값
+  - post: 글
+  - eager: true 면 썸네일을 바로 받음 (첫 화면에 보이는 위쪽 몇 칸). 없으면 화면에 들어올 때 받음
+  data-date(올린 날)와 data-tags(태그들, | 로 구분)는 목록을 걸러 볼 때 씀 (assets/js/post-filter.js)
+{% endcomment %}
+{% assign post = include.post %}
+<article
+  class="post-row"
+  data-date="{{ post.date | date: '%Y-%m-%d' }}"
+  data-tags="{{ post.tags | join: '|' }}"
+  {% if post.categories.size > 0 %}data-category="{{ post.categories[0] }}"{% endif %}
+>
+  <a class="sf-cell" href="{{ post.url | relative_url }}">
+    <div class="pr-body">
+      <h3 class="pr-title" style="view-transition-name: vt-title-{{ post.url | slugify }}">
+        {{- post.title -}}
+      </h3>
+
+      <p class="pr-desc">{% include post-summary.html %}</p>
+
+      <p class="pr-meta">
+        {% if post.categories.size > 0 %}
+          <span class="cat-badge" data-category="{{ post.categories[0] }}">{{ post.categories[0] }}</span>
+          {%- if post.categories.size > 1 -%}
+            <span class="cat-sub">/ {{ post.categories[1] }}</span>
+          {%- endif -%}
+        {% endif %}
+
+        {% if post.pin %}
+          <span class="pr-pin">
+            <i class="fas fa-thumbtack fa-fw"></i>
+            {{ site.data.locales[lang].post.pin_prompt }}
+          </span>
+        {% endif %}
+
+        <time class="pr-date" datetime="{{ post.date | date_to_xmlschema }}">
+          {{- post.date | date: '%Y.%m.%d' -}}
+        </time>
+      </p>
+    </div>
+
+    {% if post.image %}
+      {% assign src = post.image.path | default: post.image %}
+
+      {% if post.media_subpath %}
+        {% unless src contains '://' %}
+          {% assign src = post.media_subpath
+            | append: '/'
+            | append: src
+            | replace: '///', '/'
+            | replace: '//', '/'
+          %}
+        {% endunless %}
+      {% endif %}
+
+      <img
+        class="pr-thumb"
+        src="{{ src | relative_url }}"
+        alt=""
+        {% unless include.eager %}loading="lazy"{% endunless %}
+        style="view-transition-name: vt-img-{{ post.url | slugify }}; view-transition-class: vt-thumb"
+      >
+    {% endif %}
+  </a>
+</article>
